@@ -26,24 +26,24 @@ class CustomNavBar extends StatelessWidget {
             child: isSelected ? item.icon : item.inactiveIcon,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 15.0),
-          child: Material(
-            type: MaterialType.transparency,
-            child: FittedBox(
-              child: Text(
-                item.title ?? "",
-                style: TextStyle(
-                  color: isSelected
-                      ? const Color.fromARGB(255, 255, 255, 255)
-                      : const Color.fromARGB(255, 90, 90, 90),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 9,
-                ),
-              ),
-            ),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(top: 15.0),
+        //   child: Material(
+        //     type: MaterialType.transparency,
+        //     child: FittedBox(
+        //       child: Text(
+        //         item.title ?? "",
+        //         style: TextStyle(
+        //           color: isSelected
+        //               ? const Color.fromARGB(255, 255, 255, 255)
+        //               : const Color.fromARGB(255, 90, 90, 90),
+        //           fontWeight: FontWeight.w600,
+        //           fontSize: 9,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

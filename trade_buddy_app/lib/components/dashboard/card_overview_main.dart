@@ -14,11 +14,14 @@ class CardOverview extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Text('Overview',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 15)),
+         Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            child: Text('Overview',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 15)),
+          ),
           Row(
             children: [
               Expanded(

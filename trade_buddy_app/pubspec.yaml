@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
   persistent_bottom_nav_bar_v2: ^5.2.3
+  font_awesome_flutter: ^10.7.0
+  flutter_feather_icons: ^2.0.0+1
+  unicons: ^2.1.2
 
 dev_dependencies:
   flutter_test:

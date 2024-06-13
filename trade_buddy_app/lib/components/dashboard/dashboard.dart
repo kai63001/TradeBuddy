@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trade_buddy_app/components/dashboard/card_overview_main.dart';
+import 'package:trade_buddy_app/components/dashboard/card_recent_trades_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_today_main.dart';
 
 class Dashboard extends StatelessWidget {
@@ -50,7 +51,7 @@ class Dashboard extends StatelessWidget {
           ],
         ),
         body: ListView(
-          children: const [CardTodayMain(), CardOverview()],
+          children: const [CardTodayMain(), CardOverview(), CardRecentTradesMain()],
         ));
   }
 }

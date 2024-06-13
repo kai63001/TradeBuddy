@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:trade_buddy_app/components/custom_navbar.dart';
 import 'package:trade_buddy_app/components/dashboard/dashboard.dart';
+import 'package:unicons/unicons.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -59,14 +61,20 @@ class _MyHomePageState extends State<MyHomePage> {
         PersistentTabConfig(
           screen: const Dashboard(),
           item: ItemConfig(
-            icon: const Icon(Icons.home),
+            icon: const Icon(
+              FeatherIcons.grid,
+              size: 22,
+            ),
             title: "Dashboard",
           ),
         ),
         PersistentTabConfig(
           screen: const Dashboard(),
           item: ItemConfig(
-            icon: const Icon(Icons.message),
+            icon: const Icon(
+              UniconsLine.dashboard,
+              size: 25,
+            ),
             title: "Performance",
           ),
         ),

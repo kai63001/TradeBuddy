@@ -107,7 +107,54 @@ void showAddTradeManually(BuildContext context) {
                     ),
                   ],
                 ),
-              )
+              ),
+              const SizedBox(height: 20),
+              //trade side long and short
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xff00D6BF),
+                        border: Border.all(
+                            color: const Color(0xff00D6BF)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Center(
+                          child: Text(
+                            'Long',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      width: 100,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: const Color(0xffFF0E37)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Center(
+                          child: Text(
+                            'Short',
+                            style: TextStyle(
+                                color: Color(0xffFF0E37), fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
               // TextButton(
               //     onPressed: () {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:trade_buddy_app/components/add_trade/add_trade_manually.dart';
 
 class CustomNavBar extends StatelessWidget {
   final NavBarConfig navBarConfig;
@@ -94,6 +95,7 @@ class CustomNavBar extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
+                    showAddTradeManually(context);
                   },
                   child: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 12.0),

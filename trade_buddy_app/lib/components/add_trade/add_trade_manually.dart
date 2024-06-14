@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 import 'package:intl/intl.dart';
 
 void showAddTradeManually(BuildContext context) {
@@ -36,12 +37,11 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
   Map<String, dynamic> trade = {
     'symbol': '',
     'date': DateTime.now(),
-    'time': DateTime.now(),
     'tradeSide': 'LONG',
-    'entryPrice': 0.0,
-    'exitPrice': 0.0,
-    'lotSize': 0,
-    'feeCommission': 0.0,
+    'entryPrice': null,
+    'exitPrice': null,
+    'lotSize': null,
+    'feeCommission': null,
     'strategies': [],
     'feelingsMistakes': [],
     'notes': '',
@@ -70,8 +70,9 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             ),
             const SizedBox(height: 10),
             //input symbol with label
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: TextEditingController(text: trade['symbol']),
+              decoration: const InputDecoration(
                   hintText: 'AAPL',
                   labelText: 'Symbol',
                   labelStyle: TextStyle(color: Colors.white),
@@ -85,17 +86,31 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                         BorderSide(color: Color.fromARGB(255, 201, 201, 201)),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   )),
+              onChanged: (value) => {
+                setState(() {
+                  trade['symbol'] = value;
+                })
+              },
             ),
             const SizedBox(height: 20),
             //selection date and time with label
             GestureDetector(
               onTap: () => {
-                DatePicker.showDateTimePicker(context, showTitleActions: true,
-                    onChanged: (date) {
-                  print('change $date');
-                }, onConfirm: (date) {
-                  print('confirm $date');
-                }, currentTime: DateTime.now(), locale: LocaleType.en)
+                picker.DatePicker.showDateTimePicker(context,
+                    showTitleActions: true,
+                    onChanged: (date) {}, onConfirm: (date) {
+                  setState(() {
+                    trade['date'] = date;
+                  });
+                },
+                    currentTime: DateTime.now(),
+                    locale: picker.LocaleType.en,
+                    theme: const picker.DatePickerTheme(
+                      backgroundColor: Color(0xff222222),
+                      itemStyle: TextStyle(color: Colors.white),
+                      doneStyle: TextStyle(color: Colors.white),
+                      cancelStyle: TextStyle(color: Colors.white),
+                    ))
               },
               child: Row(
                 children: [
@@ -111,7 +126,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             horizontal: 10, vertical: 10),
                         child: Center(
                           child: Text(
-                            formattedDate.format(now),
+                            formattedDate.format(trade['date']),
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 18),
                           ),
@@ -132,7 +147,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                           horizontal: 10, vertical: 10),
                       child: Center(
                         child: Text(
-                          formatTime.format(now),
+                          formatTime.format(trade['date']),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 18),
                         ),
@@ -155,6 +170,15 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
               children: [
                 Expanded(
                   child: TextField(
+                    controller: TextEditingController(
+                        text: trade['entryPrice'] == null
+                            ? ''
+                            : trade['entryPrice'].toString()),
+                    onChanged: (value) => {
+                      setState(() {
+                        trade['entryPrice'] = double.parse(value);
+                      })
+                    },
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: const InputDecoration(
@@ -176,6 +200,15 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: TextField(
+                    controller: TextEditingController(
+                        text: trade['exitPrice'] == null
+                            ? ''
+                            : trade['exitPrice'].toString()),
+                    onChanged: (value) => {
+                      setState(() {
+                        trade['exitPrice'] = double.parse(value);
+                      })
+                    },
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: const InputDecoration(
@@ -202,6 +235,15 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
               children: [
                 Expanded(
                   child: TextField(
+                    controller: TextEditingController(
+                        text: trade['lotSize'] == null
+                            ? ''
+                            : trade['lotSize'].toString()),
+                    onChanged: (value) => {
+                      setState(() {
+                        trade['lotSize'] = int.parse(value);
+                      })
+                    },
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: const InputDecoration(
@@ -223,6 +265,15 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: TextField(
+                    controller: TextEditingController(
+                        text: trade['feeCommission'] == null
+                            ? ''
+                            : trade['feeCommission'].toString()),
+                    onChanged: (value) => {
+                      setState(() {
+                        trade['feeCommission'] = double.parse(value);
+                      })
+                    },
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: const InputDecoration(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:intl/intl.dart';
 
@@ -116,8 +117,7 @@ void showAddTradeManually(BuildContext context) {
                     child: Container(
                       decoration: BoxDecoration(
                         color: const Color(0xff00D6BF),
-                        border: Border.all(
-                            color: const Color(0xff00D6BF)),
+                        border: Border.all(color: const Color(0xff00D6BF)),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Padding(
@@ -155,20 +155,191 @@ void showAddTradeManually(BuildContext context) {
                   ),
                 ],
               ),
-
-              // TextButton(
-              //     onPressed: () {
-              //       DatePicker.showDateTimePicker(context, showTitleActions: true,
-              //           onChanged: (date) {
-              //         print('change $date');
-              //       }, onConfirm: (date) {
-              //         print('confirm $date');
-              //       }, currentTime: DateTime.now(), locale: LocaleType.en);
-              //     },
-              //     child: const Text(
-              //       'show date time picker (Chinese)',
-              //       style: TextStyle(color: Colors.blue),
-              //     ))
+              //Row entry price and exit price
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: const InputDecoration(
+                          hintText: '\$120.1',
+                          labelText: 'Entry Price',
+                          labelStyle: TextStyle(color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 207, 207, 207)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 201, 201, 201)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          )),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: const InputDecoration(
+                          hintText: '\$123.1',
+                          labelText: 'Exit Price',
+                          labelStyle: TextStyle(color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 207, 207, 207)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 201, 201, 201)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+              //Row Lot Size and Fee and commission
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: const InputDecoration(
+                          hintText: '1',
+                          labelText: 'Lot Size',
+                          labelStyle: TextStyle(color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 207, 207, 207)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 201, 201, 201)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          )),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: const InputDecoration(
+                          hintText: '\$0.1',
+                          labelText: 'Fee & Commission',
+                          labelStyle: TextStyle(color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 207, 207, 207)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 201, 201, 201)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+              //Selection Statigies
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 207, 207, 207)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Strategies (Optional)',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ),
+              //Selection of Feelings mistake (optional)
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 207, 207, 207)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Feelings & Mistakes (Optional)',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ),
+              //Notes
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 207, 207, 207)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextField(
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                        //hint long text about trade notes
+                        hintText: 'What did you learn from this trade?',
+                        border: InputBorder.none),
+                  ),
+                ),
+              ),
+              //Button Save Trade
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {},
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Icon(Icons.save, color: Colors.black),
+                        SizedBox(width: 30),
+                        Text(
+                          'Save Trade',
+                          style: TextStyle(color: Colors.black, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

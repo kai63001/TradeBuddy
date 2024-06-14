@@ -33,7 +33,7 @@ class Dashboard extends StatelessWidget {
                 child: const Row(
                   children: [
                     Text(
-                      'TOPSTEP 50K',
+                      'FTMO 100K Challenge',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

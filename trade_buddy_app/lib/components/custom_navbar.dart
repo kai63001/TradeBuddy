@@ -48,6 +48,125 @@ class CustomNavBar extends StatelessWidget {
     );
   }
 
+  void showAddTradeType(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: const Color(0xff2B2B2F),
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 320,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                child: Row(
+                  //sspace between
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Add a New Trade Entry',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16)),
+
+                    //icon close
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white, // background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5), // radius value
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.add, color: Colors.black),
+                        SizedBox(width: 30),
+                        Text('Enter Trade Manually',
+                            style: TextStyle(color: Colors.black)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white, // background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5), // radius value
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.image, color: Colors.black),
+                        SizedBox(width: 30),
+                        Text('Upload Screenshot',
+                            style: TextStyle(color: Colors.black)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white, // background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5), // radius value
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.upload_file, color: Colors.black),
+                        SizedBox(width: 30),
+                        Text('Import Trade Data',
+                            style: TextStyle(color: Colors.black)),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DecoratedNavBar(
@@ -66,16 +185,20 @@ class CustomNavBar extends StatelessWidget {
           int index = navBarConfig.items.indexOf(item);
           if (index == navBarConfig.items.length ~/ 2) {
             return Expanded(
-              child: Container(
-                //icon plus
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.add),
-                  color: const Color(0xff222222),
-                  onPressed: () {},
+              child: GestureDetector(
+                onTap: () {
+                  showAddTradeType(context);
+                },
+                child: Container(
+                  //icon plus
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.add, color: Colors.black, size: 30),
+                  ),
                 ),
               ),
             );

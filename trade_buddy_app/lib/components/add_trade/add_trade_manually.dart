@@ -32,6 +32,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
   DateFormat formattedDate = DateFormat('dd-MMMM-yyyy');
   DateFormat formatTime = DateFormat('kk:mm');
 
+
   DateTime now = DateTime.now();
 
   Map<String, dynamic> trade = {
@@ -46,6 +47,10 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     'feelingsMistakes': [],
     'notes': '',
   };
+
+  void onChangeStrategies(String data) {
+    print('Strategies $data');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -296,27 +301,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             ),
             //Selection Statigies
             const SizedBox(height: 20),
-            Container(
-              decoration: BoxDecoration(
-                border:
-                    Border.all(color: const Color.fromARGB(255, 207, 207, 207)),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Strategies (Optional)',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ),
-                    Icon(Icons.arrow_drop_down, color: Colors.white),
-                  ],
-                ),
-              ),
-            ),
+            startegiesSelection(onChangeStrategies),
             //Selection of Feelings mistake (optional)
             const SizedBox(height: 20),
             Container(
@@ -387,6 +372,109 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  GestureDetector startegiesSelection(Function onChanged) {
+    return GestureDetector(
+      onTap: () => {
+        showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return StrategiesSelectionState(
+                onChanged: onChanged,
+              );
+            }),
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color.fromARGB(255, 207, 207, 207)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Strategies (Optional)',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+              Icon(Icons.arrow_drop_down, color: Colors.white),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class StrategiesSelectionState extends StatefulWidget {
+  final Function? onChanged;
+
+  const StrategiesSelectionState({super.key, this.onChanged});
+
+  @override
+  State<StrategiesSelectionState> createState() =>
+      _StrategiesSelectionStateState();
+}
+
+class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
+  final List<int> _list = List.generate(20, (i) => i);
+  final List<bool> _selected = List.generate(20, (i) => false);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xff222222),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Select Strategies',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16)),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          //list of strategies
+          Expanded(
+            child: ListView.builder(
+              itemBuilder: (_, i) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 207, 207, 207)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  child: ListTile(
+                    title: Text('Strategy ${_list[i]}',
+                        style: const TextStyle(color: Colors.white)),
+                    trailing: _selected[i]
+                        ? const Icon(Icons.check, color: Colors.white)
+                        : null,
+                    onTap: () {
+                      widget.onChanged!('1');
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

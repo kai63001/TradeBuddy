@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void showAddTradeManually(BuildContext context) {
   showModalBottomSheet(
@@ -32,7 +33,6 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
   DateFormat formattedDate = DateFormat('dd-MMMM-yyyy');
   DateFormat formatTime = DateFormat('kk:mm');
 
-
   DateTime now = DateTime.now();
 
   Map<String, dynamic> trade = {
@@ -48,8 +48,10 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     'notes': '',
   };
 
-  void onChangeStrategies(String data) {
-    print('Strategies $data');
+  void onChangeStrategies(List<String> strategies) {
+    setState(() {
+      trade['strategies'] = strategies;
+    });
   }
 
   @override
@@ -384,6 +386,9 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             builder: (context) {
               return StrategiesSelectionState(
                 onChanged: onChanged,
+                strategiesListSelected: trade['strategies'].isEmpty
+                    ? []
+                    : trade['strategies'],
               );
             }),
       },
@@ -413,8 +418,10 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
 
 class StrategiesSelectionState extends StatefulWidget {
   final Function? onChanged;
+  final List<String> strategiesListSelected;
 
-  const StrategiesSelectionState({super.key, this.onChanged});
+  const StrategiesSelectionState(
+      {super.key, this.onChanged, required this.strategiesListSelected});
 
   @override
   State<StrategiesSelectionState> createState() =>
@@ -422,8 +429,58 @@ class StrategiesSelectionState extends StatefulWidget {
 }
 
 class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
-  final List<int> _list = List.generate(20, (i) => i);
-  final List<bool> _selected = List.generate(20, (i) => false);
+  List<String> _strategiesList = [];
+  List<String> _selected = [];
+
+  @override
+  void initState() {
+    super.initState();
+    initSelcted();
+    initStrategy();
+  }
+
+  void initSelcted() {
+    if (widget.strategiesListSelected.isNotEmpty) {
+      setState(() {
+        _selected = widget.strategiesListSelected;
+      });
+    }
+  }
+
+  Future<void> initStrategy() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final List<String> strategies = prefs.getStringList('strategies') ?? [];
+    if (strategies.isEmpty) {
+      for (int i = 1; i <= 10; i++) {
+        setState(() {
+          _strategiesList.add(i.toString());
+        });
+        prefs.setStringList('strategies', _strategiesList);
+      }
+    } else {
+      setState(() {
+        _strategiesList = strategies;
+      });
+    }
+  }
+
+  void onClickStrategies(String data) {
+    setState(() {
+      if (_selected.contains(data)) {
+        _selected.remove(data);
+      } else {
+        _selected.add(data);
+      }
+    });
+    widget.onChanged!(_selected);
+  }
+
+  bool checkSelected(String data) {
+    // ignore: collection_methods_unrelated_type
+    return _selected.contains(data);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -451,6 +508,7 @@ class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
           //list of strategies
           Expanded(
             child: ListView.builder(
+              itemCount: _strategiesList.length,
               itemBuilder: (_, i) {
                 return Container(
                   decoration: BoxDecoration(
@@ -461,13 +519,13 @@ class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
                   margin:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: ListTile(
-                    title: Text('Strategy ${_list[i]}',
+                    title: Text('Strategy ${_strategiesList[i]}',
                         style: const TextStyle(color: Colors.white)),
-                    trailing: _selected[i]
+                    trailing: checkSelected(_strategiesList[i])
                         ? const Icon(Icons.check, color: Colors.white)
                         : null,
                     onTap: () {
-                      widget.onChanged!('1');
+                      onClickStrategies(_strategiesList[i]);
                     },
                   ),
                 );

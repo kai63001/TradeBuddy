@@ -303,7 +303,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             ),
             //Selection Statigies
             const SizedBox(height: 20),
-            startegiesSelection(onChangeStrategies),
+            startegiesSelection(onChangeStrategies, trade['strategies']),
             //Selection of Feelings mistake (optional)
             const SizedBox(height: 20),
             Container(
@@ -378,7 +378,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     );
   }
 
-  GestureDetector startegiesSelection(Function onChanged) {
+  GestureDetector startegiesSelection(
+      Function onChanged, List<String> strategies) {
     return GestureDetector(
       onTap: () => {
         showModalBottomSheet(
@@ -386,9 +387,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             builder: (context) {
               return StrategiesSelectionState(
                 onChanged: onChanged,
-                strategiesListSelected: trade['strategies'].isEmpty
-                    ? []
-                    : trade['strategies'],
+                strategiesListSelected:
+                    trade['strategies'].isEmpty ? [] : trade['strategies'],
               );
             }),
       },
@@ -397,17 +397,19 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
           border: Border.all(color: const Color.fromARGB(255, 207, 207, 207)),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Row(
             children: [
               Expanded(
                 child: Text(
-                  'Strategies (Optional)',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  strategies.isEmpty
+                      ? 'Select Strategies'
+                      : '${strategies.length} Strategies Selected',
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
-              Icon(Icons.arrow_drop_down, color: Colors.white),
+              const Icon(Icons.arrow_drop_down, color: Colors.white),
             ],
           ),
         ),
@@ -492,8 +494,11 @@ class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Select Strategies',
-                    style: TextStyle(
+                Text(
+                    _selected.length > 0
+                        ? '${_selected.length} Strategies Selected'
+                        : 'Select Strategies',
+                    style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                         fontSize: 16)),

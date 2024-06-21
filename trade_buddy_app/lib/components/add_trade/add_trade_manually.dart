@@ -4,6 +4,8 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trade_buddy_app/components/add_trade/components/feeling_mistake_selection.dart';
+import 'package:trade_buddy_app/components/add_trade/components/strategies_selection_components.dart';
 
 void showAddTradeManually(BuildContext context) {
   showModalBottomSheet(
@@ -51,6 +53,12 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
   void onChangeStrategies(List<String> strategies) {
     setState(() {
       trade['strategies'] = strategies;
+    });
+  }
+
+  void onChangeFeelingsMistakes(List<String> feelingsMistakes) {
+    setState(() {
+      trade['feelingsMistakes'] = feelingsMistakes;
     });
   }
 
@@ -303,30 +311,18 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             ),
             //Selection Statigies
             const SizedBox(height: 20),
-            startegiesSelection(onChangeStrategies, trade['strategies']),
+            startegiesSelection(
+                onChangeStrategies,
+                trade['strategies'].isEmpty
+                    ? []
+                    : trade['strategies'] as List<String>),
             //Selection of Feelings mistake (optional)
             const SizedBox(height: 20),
-            Container(
-              decoration: BoxDecoration(
-                border:
-                    Border.all(color: const Color.fromARGB(255, 207, 207, 207)),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Feelings & Mistakes (Optional)',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ),
-                    Icon(Icons.arrow_drop_down, color: Colors.white),
-                  ],
-                ),
-              ),
-            ),
+            feelingOrMisstakeSelection(
+                onChangeFeelingsMistakes,
+                trade['feelingsMistakes'].isEmpty
+                    ? []
+                    : trade['feelingsMistakes'] as List<String>),
             //Notes
             const SizedBox(height: 20),
             Container(
@@ -378,6 +374,46 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     );
   }
 
+  GestureDetector feelingOrMisstakeSelection(
+      Function onChanged, List<String> feelingOrMisstake) {
+    return GestureDetector(
+      onTap: () => {
+        showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return FeelingMistakeSelectionState(
+                onChanged: onChanged,
+                feelingMistakeListSelected: trade['feelingsMistakes'].isEmpty
+                    ? []
+                    : trade['feelingsMistakes'],
+              );
+            }),
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color.fromARGB(255, 207, 207, 207)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  feelingOrMisstake.isEmpty
+                      ? 'Feelings & Mistakes (Optional)'
+                      : '${feelingOrMisstake.length} Feelings & Mistakes Selected',
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+              const Icon(Icons.arrow_drop_down, color: Colors.white),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   GestureDetector startegiesSelection(
       Function onChanged, List<String> strategies) {
     return GestureDetector(
@@ -404,7 +440,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
               Expanded(
                 child: Text(
                   strategies.isEmpty
-                      ? 'Select Strategies'
+                      ? 'Select Strategies (Optional)'
                       : '${strategies.length} Strategies Selected',
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                 ),
@@ -413,131 +449,6 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class StrategiesSelectionState extends StatefulWidget {
-  final Function? onChanged;
-  final List<String> strategiesListSelected;
-
-  const StrategiesSelectionState(
-      {super.key, this.onChanged, required this.strategiesListSelected});
-
-  @override
-  State<StrategiesSelectionState> createState() =>
-      _StrategiesSelectionStateState();
-}
-
-class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
-  List<String> _strategiesList = [];
-  List<String> _selected = [];
-
-  @override
-  void initState() {
-    super.initState();
-    initSelcted();
-    initStrategy();
-  }
-
-  void initSelcted() {
-    if (widget.strategiesListSelected.isNotEmpty) {
-      setState(() {
-        _selected = widget.strategiesListSelected;
-      });
-    }
-  }
-
-  Future<void> initStrategy() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    final List<String> strategies = prefs.getStringList('strategies') ?? [];
-    if (strategies.isEmpty) {
-      for (int i = 1; i <= 10; i++) {
-        setState(() {
-          _strategiesList.add(i.toString());
-        });
-        prefs.setStringList('strategies', _strategiesList);
-      }
-    } else {
-      setState(() {
-        _strategiesList = strategies;
-      });
-    }
-  }
-
-  void onClickStrategies(String data) {
-    setState(() {
-      if (_selected.contains(data)) {
-        _selected.remove(data);
-      } else {
-        _selected.add(data);
-      }
-    });
-    widget.onChanged!(_selected);
-  }
-
-  bool checkSelected(String data) {
-    // ignore: collection_methods_unrelated_type
-    return _selected.contains(data);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xff222222),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                    _selected.length > 0
-                        ? '${_selected.length} Strategies Selected'
-                        : 'Select Strategies',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 16)),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          //list of strategies
-          Expanded(
-            child: ListView.builder(
-              itemCount: _strategiesList.length,
-              itemBuilder: (_, i) {
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 207, 207, 207)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: ListTile(
-                    title: Text('Strategy ${_strategiesList[i]}',
-                        style: const TextStyle(color: Colors.white)),
-                    trailing: checkSelected(_strategiesList[i])
-                        ? const Icon(Icons.check, color: Colors.white)
-                        : null,
-                    onTap: () {
-                      onClickStrategies(_strategiesList[i]);
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

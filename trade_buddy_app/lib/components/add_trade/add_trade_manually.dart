@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trade_buddy_app/components/add_trade/components/feeling_mistake_selection.dart';
 import 'package:trade_buddy_app/components/add_trade/components/strategies_selection_components.dart';
 

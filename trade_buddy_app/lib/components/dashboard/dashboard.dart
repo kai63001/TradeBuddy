@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trade_buddy_app/components/dashboard/account/selection_profile_state.dart';
 import 'package:trade_buddy_app/components/dashboard/card_overview_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_recent_trades_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_today_main.dart';
@@ -29,7 +30,9 @@ class Dashboard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  selectProfile(context);
+                },
                 child: const Row(
                   children: [
                     Text(
@@ -51,7 +54,20 @@ class Dashboard extends StatelessWidget {
           ],
         ),
         body: ListView(
-          children: const [CardTodayMain(), CardOverview(), CardRecentTradesMain()],
+          children: const [
+            CardTodayMain(),
+            CardOverview(),
+            CardRecentTradesMain()
+          ],
         ));
+  }
+
+  Future<dynamic> selectProfile(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return const SelectionProfileState();
+      },
+    );
   }
 }

@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:trade_buddy_app/components/custom_navbar.dart';
 import 'package:trade_buddy_app/components/dashboard/dashboard.dart';
+import 'package:trade_buddy_app/page/create_profile/create_profile_page.dart';
 import 'package:trade_buddy_app/store/profile_store.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
 import 'package:unicons/unicons.dart';
 
 void main() {
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ProfileStore()),
+        BlocProvider(create: (_) => SelectProfileStore())
       ],
       child: MaterialApp(
         title: 'TradeBuddy',
@@ -46,10 +49,11 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: GoogleFonts.poppins().fontFamily,
         ),
-        home: const MyHomePage(),
+        initialRoute: "/home",
         routes: {
           "/home": (context) => const MyHomePage(),
           "/interactive": (context) => const Dashboard(),
+          "/create-profile-page": (context) => const CreateProfilePage(),
         },
       ),
     );
@@ -64,6 +68,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<Map<String, dynamic>> profiles = [];
+
+  //init
+  @override
+  void initState() {
+    super.initState();
+    checkHaveAnyProfileOrNot();
+  }
+
+  void checkHaveAnyProfileOrNot() {
+    final profileStore = context.read<ProfileStore>();
+    if (profileStore.state.isNotEmpty) {
+      setState(() {
+        profiles = profileStore.state;
+      });
+    }
+  }
+
   List<PersistentTabConfig> _tabs() => [
         PersistentTabConfig(
           screen: const Dashboard(),
@@ -110,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // if (profiles.isEmpty) return const CreateProfilePage();
     return PersistentTabView(
       tabs: _tabs(),
       navBarBuilder: (navBarConfig) => CustomNavBar(

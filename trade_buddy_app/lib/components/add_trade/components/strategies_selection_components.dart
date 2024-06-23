@@ -108,8 +108,7 @@ class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
                 if (i == _strategiesList.length) {
                   return Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.white),
+                      color: const Color.fromARGB(255, 39, 39, 45),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     margin:
@@ -117,7 +116,7 @@ class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
                     child: ListTile(
                       title: const Center(
                         child: Text('Manage Strategies',
-                            style: TextStyle(color: Colors.black)),
+                            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
                       ),
                       onTap: () {
                         //add new strategy
@@ -127,8 +126,7 @@ class _StrategiesSelectionStateState extends State<StrategiesSelectionState> {
                 }
                 return Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 207, 207, 207)),
+                   color: const Color(0xff2B2B2F),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   margin:

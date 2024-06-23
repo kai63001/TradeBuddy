@@ -124,8 +124,7 @@ class _FeelingMistakeSelectionStateState
                 if (i == _feelingMistakeList.length) {
                   return Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.white),
+                      color: const Color.fromARGB(255, 39, 39, 45),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     margin:
@@ -134,7 +133,7 @@ class _FeelingMistakeSelectionStateState
                       title: const Center(
                         child: Text(
                           'Manage Feelings/Mistakes',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                         ),
                       ),
                       onTap: () {
@@ -145,9 +144,7 @@ class _FeelingMistakeSelectionStateState
                 }
                 return Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color.fromARGB(255, 207, 207, 207),
-                    ),
+                    color: const Color(0xff2B2B2F),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   margin:

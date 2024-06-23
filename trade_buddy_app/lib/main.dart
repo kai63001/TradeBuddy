@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // if (profiles.isEmpty) return const CreateProfilePage();
+    if (profiles.isEmpty) return const CreateProfilePage();
     return PersistentTabView(
       tabs: _tabs(),
       navBarBuilder: (navBarConfig) => CustomNavBar(

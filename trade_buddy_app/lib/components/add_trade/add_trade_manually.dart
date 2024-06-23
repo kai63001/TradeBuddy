@@ -83,30 +83,34 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
               ],
             ),
             const SizedBox(height: 10),
+            const Text('Symbol'),
+            const SizedBox(height: 5),
             //input symbol with label
-            TextField(
-              controller: TextEditingController(text: trade['symbol']),
-              decoration: const InputDecoration(
-                  hintText: 'AAPL',
-                  labelText: 'Symbol',
-                  labelStyle: TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 207, 207, 207)),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xff2B2B2F),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  controller: TextEditingController(text: trade['symbol']),
+                  decoration: const InputDecoration(
+                    hintText: 'AAPL',
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: InputBorder.none,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 201, 201, 201)),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  )),
-              onChanged: (value) => {
-                setState(() {
-                  trade['symbol'] = value;
-                })
-              },
+                  onChanged: (value) => {
+                    setState(() {
+                      trade['symbol'] = value;
+                    })
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 20),
+            const Text('Date and time'),
+            const SizedBox(height: 5),
             //selection date and time with label
             GestureDetector(
               onTap: () => {
@@ -131,8 +135,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(
-                            color: const Color.fromARGB(255, 207, 207, 207)),
+                        color: const Color(0xff2B2B2F),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Padding(
@@ -152,8 +155,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                   Container(
                     width: 100,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 207, 207, 207)),
+                      color: const Color(0xff2B2B2F),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Padding(
@@ -183,62 +185,80 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: TextEditingController(
-                        text: trade['entryPrice'] == null
-                            ? ''
-                            : trade['entryPrice'].toString()),
-                    onChanged: (value) => {
-                      setState(() {
-                        trade['entryPrice'] = double.parse(value);
-                      })
-                    },
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        hintText: '\$120.1',
-                        labelText: 'Entry Price',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 207, 207, 207)),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Entry Price'),
+                      const SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff2B2B2F),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 201, 201, 201)),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        )),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextField(
+                            controller: TextEditingController(
+                                text: trade['entryPrice'] == null
+                                    ? ''
+                                    : trade['entryPrice'].toString()),
+                            onChanged: (value) => {
+                              setState(() {
+                                trade['entryPrice'] = double.parse(value);
+                              })
+                            },
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: const InputDecoration(
+                              hintText: '\$120.1',
+                              labelStyle: TextStyle(color: Colors.white),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: TextField(
-                    controller: TextEditingController(
-                        text: trade['exitPrice'] == null
-                            ? ''
-                            : trade['exitPrice'].toString()),
-                    onChanged: (value) => {
-                      setState(() {
-                        trade['exitPrice'] = double.parse(value);
-                      })
-                    },
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        hintText: '\$123.1',
-                        labelText: 'Exit Price',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 207, 207, 207)),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Exit Price'),
+                      const SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff2B2B2F),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 201, 201, 201)),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        )),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextField(
+                            controller: TextEditingController(
+                                text: trade['exitPrice'] == null
+                                    ? ''
+                                    : trade['exitPrice'].toString()),
+                            onChanged: (value) => {
+                              setState(() {
+                                trade['exitPrice'] = double.parse(value);
+                              })
+                            },
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: const InputDecoration(
+                              hintText: '\$123.1',
+                              labelStyle: TextStyle(color: Colors.white),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -248,62 +268,80 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: TextEditingController(
-                        text: trade['lotSize'] == null
-                            ? ''
-                            : trade['lotSize'].toString()),
-                    onChanged: (value) => {
-                      setState(() {
-                        trade['lotSize'] = int.parse(value);
-                      })
-                    },
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        hintText: '1',
-                        labelText: 'Lot Size',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 207, 207, 207)),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Lot Size'),
+                      const SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff2B2B2F),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 201, 201, 201)),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        )),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextField(
+                            controller: TextEditingController(
+                                text: trade['lotSize'] == null
+                                    ? ''
+                                    : trade['lotSize'].toString()),
+                            onChanged: (value) => {
+                              setState(() {
+                                trade['lotSize'] = int.parse(value);
+                              })
+                            },
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: const InputDecoration(
+                              hintText: '1',
+                              labelStyle: TextStyle(color: Colors.white),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: TextField(
-                    controller: TextEditingController(
-                        text: trade['feeCommission'] == null
-                            ? ''
-                            : trade['feeCommission'].toString()),
-                    onChanged: (value) => {
-                      setState(() {
-                        trade['feeCommission'] = double.parse(value);
-                      })
-                    },
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        hintText: '\$0.1',
-                        labelText: 'Fee & Commission',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 207, 207, 207)),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Fee & Commission'),
+                      const SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff2B2B2F),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 201, 201, 201)),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        )),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextField(
+                            controller: TextEditingController(
+                                text: trade['feeCommission'] == null
+                                    ? ''
+                                    : trade['feeCommission'].toString()),
+                            onChanged: (value) => {
+                              setState(() {
+                                trade['feeCommission'] = double.parse(value);
+                              })
+                            },
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: const InputDecoration(
+                              hintText: '\$0.1',
+                              labelStyle: TextStyle(color: Colors.white),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -326,12 +364,11 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             const SizedBox(height: 20),
             Container(
               decoration: BoxDecoration(
-                border:
-                    Border.all(color: const Color.fromARGB(255, 207, 207, 207)),
+                color: const Color(0xff2B2B2F),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                 child: TextField(
                   maxLines: 5,
                   decoration: InputDecoration(
@@ -367,6 +404,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -390,7 +428,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: const Color.fromARGB(255, 207, 207, 207)),
+          color: const Color(0xff2B2B2F),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(
@@ -429,7 +467,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: const Color.fromARGB(255, 207, 207, 207)),
+          color: const Color(0xff2B2B2F),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(

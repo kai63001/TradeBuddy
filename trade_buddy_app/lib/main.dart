@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:trade_buddy_app/components/custom_navbar.dart';
 import 'package:trade_buddy_app/components/dashboard/dashboard.dart';
@@ -69,6 +70,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Map<String, dynamic>> profiles = [];
+  bool loading = true;
 
   //init
   @override
@@ -77,13 +79,17 @@ class _MyHomePageState extends State<MyHomePage> {
     checkHaveAnyProfileOrNot();
   }
 
-  void checkHaveAnyProfileOrNot() {
+  Future<void> checkHaveAnyProfileOrNot() async {
+    await context.read<ProfileStore>().initProfileList();
     final profileStore = context.read<ProfileStore>();
     if (profileStore.state.isNotEmpty) {
       setState(() {
         profiles = profileStore.state;
       });
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   List<PersistentTabConfig> _tabs() => [
@@ -132,6 +138,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (loading) {
+      return Scaffold(
+          body: Center(
+        child: LoadingAnimationWidget.beat(
+          color: Colors.white,
+          size: 50,
+        ),
+      ));
+    }
     if (profiles.isEmpty) return const CreateProfilePage();
     return PersistentTabView(
       tabs: _tabs(),

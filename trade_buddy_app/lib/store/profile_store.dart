@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileStore extends Cubit<List<Map<String, dynamic>>> {
   ProfileStore() : super([]) {
-    _initProfileList();
+    initProfileList();
   }
 
   Future<void> addProfile(String profileData) async {
@@ -17,7 +17,7 @@ class ProfileStore extends Cubit<List<Map<String, dynamic>>> {
     emit(newProfiles.cast<Map<String, dynamic>>());
   }
 
-  Future<void> _initProfileList() async {
+  Future<void> initProfileList() async {
     final prefs = await SharedPreferences.getInstance();
     final rawProfiles = prefs.getStringList('profileList') ?? [];
     final profiles = rawProfiles.map((e) => jsonDecode(e)).toList();

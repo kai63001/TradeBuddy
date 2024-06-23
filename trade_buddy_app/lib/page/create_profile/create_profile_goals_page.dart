@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trade_buddy_app/main.dart';
+import 'package:trade_buddy_app/store/profile_store.dart';
 
 class CreateProfileGoalsPage extends StatefulWidget {
   const CreateProfileGoalsPage(
@@ -11,6 +16,36 @@ class CreateProfileGoalsPage extends StatefulWidget {
 }
 
 class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
+  int dailyGoal = 0;
+  int weeklyGoal = 0;
+  int monthlyGoal = 0;
+  int yearlyGoal = 0;
+
+  bool checkCondition() {
+    return dailyGoal > 0 && weeklyGoal > 0 && monthlyGoal > 0 && yearlyGoal > 0;
+  }
+
+  void createProfile() {
+    // save profile to database
+    context.read<ProfileStore>().addProfile(
+          jsonEncode({
+            'id': DateTime.now().millisecondsSinceEpoch,
+            'name': widget.nameProfile,
+            'type': widget.type,
+            'dailyGoal': dailyGoal,
+            'weeklyGoal': weeklyGoal,
+            'monthlyGoal': monthlyGoal,
+            'yearlyGoal': yearlyGoal,
+          }),
+        );
+
+    //Navigator with remove until
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+        (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +55,7 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
         children: [
           //input selection type container show bottom sheet
           const Center(
-            child: Text('Create Profile',
+            child: Text('Set up your Goals',
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
@@ -29,7 +64,7 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
           const SizedBox(height: 20),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 25.0),
-            child: Text('Profile Goals',
+            child: Text('Daily Goal',
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -46,12 +81,155 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextField(
-                  onChanged: (value) => {},
+                  onChanged: (value) => {
+                    setState(() {
+                      dailyGoal = int.parse(value);
+                    })
+                  },
                   decoration: const InputDecoration(
-                      hintText: 'Main Account',
+                      hintText: '200',
                       fillColor: Color(0xff2B2B2F),
                       labelStyle: TextStyle(color: Colors.white),
                       border: InputBorder.none),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: Text('Weekly Goal',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15)),
+          ),
+          const SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xff2B2B2F),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  onChanged: (value) => {
+                    setState(() {
+                      weeklyGoal = int.parse(value);
+                    })
+                  },
+                  decoration: const InputDecoration(
+                      hintText: '1000',
+                      fillColor: Color(0xff2B2B2F),
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: InputBorder.none),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: Text('Monthly Goal',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15)),
+          ),
+          const SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xff2B2B2F),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  onChanged: (value) => {
+                    setState(() {
+                      monthlyGoal = int.parse(value);
+                    })
+                  },
+                  decoration: const InputDecoration(
+                      hintText: '5000',
+                      fillColor: Color(0xff2B2B2F),
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: InputBorder.none),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: Text('Yearly Goal',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15)),
+          ),
+          const SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xff2B2B2F),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  onChanged: (value) => {
+                    setState(() {
+                      yearlyGoal = int.parse(value);
+                    })
+                  },
+                  decoration: const InputDecoration(
+                      hintText: '10000',
+                      fillColor: Color(0xff2B2B2F),
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: InputBorder.none),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: Text(
+                'Your goals will be used to track your progress and help you stay on track. You can always change them later.',
+                style: TextStyle(
+                    color: Color.fromARGB(255, 168, 168, 168),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12)),
+          ),
+          const SizedBox(height: 15),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                onPressed: checkCondition() ? createProfile : null,
+                style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor:
+                      const Color.fromARGB(255, 136, 136, 147),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 13),
+                  child: Text(
+                    'Create Profile',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15),
+                  ),
                 ),
               ),
             ),

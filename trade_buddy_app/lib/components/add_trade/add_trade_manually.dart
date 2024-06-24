@@ -35,6 +35,22 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
   DateFormat formatTime = DateFormat('kk:mm');
   bool showAdvanced = false;
 
+  //Controller
+  final Map<String, TextEditingController> _controllers = {};
+  TextEditingController _getController(String key, String initialValue) {
+    if (!_controllers.containsKey(key)) {
+      _controllers[key] = TextEditingController(text: initialValue);
+    }
+    return _controllers[key]!;
+  }
+
+  @override
+  void dispose() {
+    // Dispose of all controllers
+    _controllers.forEach((_, controller) => controller.dispose());
+    super.dispose();
+  }
+
   DateTime now = DateTime.now();
 
   Map<String, dynamic> trade = {
@@ -64,8 +80,26 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     });
   }
 
+  bool checkConditionCanSave() {
+    return trade['symbol'].isNotEmpty &&
+        trade['entryPrice'] != null &&
+        trade['exitPrice'] != null &&
+        trade['lotSize'] != null &&
+        trade['feeCommission'] != null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final symbolController = _getController('symbol', trade['symbol'] ?? '');
+    final entryPriceController =
+        _getController('entryPrice', trade['entryPrice']?.toString() ?? '');
+    final exitPriceController =
+        _getController('exitPrice', trade['exitPrice']?.toString() ?? '');
+    final lotSizeController =
+        _getController('lotSize', trade['lotSize']?.toString() ?? '');
+    final feeCommissionController = _getController(
+        'feeCommission', trade['feeCommission']?.toString() ?? '');
+    final notesController = _getController('notes', trade['notes'] ?? '');
     return SizedBox(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -201,10 +235,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
-                            controller: TextEditingController(
-                                text: trade['entryPrice'] == null
-                                    ? ''
-                                    : trade['entryPrice'].toString()),
+                            controller: entryPriceController,
                             onChanged: (value) => {
                               setState(() {
                                 trade['entryPrice'] = double.parse(value);
@@ -212,7 +243,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             },
                             keyboardType: TextInputType.number,
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9.]')),
                             ],
                             decoration: const InputDecoration(
                               hintText: '\$120.1',
@@ -240,10 +272,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
-                            controller: TextEditingController(
-                                text: trade['exitPrice'] == null
-                                    ? ''
-                                    : trade['exitPrice'].toString()),
+                            controller: exitPriceController,
                             onChanged: (value) => {
                               setState(() {
                                 trade['exitPrice'] = double.parse(value);
@@ -251,7 +280,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             },
                             keyboardType: TextInputType.number,
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9.]')),
                             ],
                             decoration: const InputDecoration(
                               hintText: '\$123.1',
@@ -284,10 +314,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
-                            controller: TextEditingController(
-                                text: trade['lotSize'] == null
-                                    ? ''
-                                    : trade['lotSize'].toString()),
+                            controller: lotSizeController,
                             onChanged: (value) => {
                               setState(() {
                                 trade['lotSize'] = int.parse(value);
@@ -295,7 +322,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             },
                             keyboardType: TextInputType.number,
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9.]'))
                             ],
                             decoration: const InputDecoration(
                               hintText: '1',
@@ -323,10 +351,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
-                            controller: TextEditingController(
-                                text: trade['feeCommission'] == null
-                                    ? ''
-                                    : trade['feeCommission'].toString()),
+                            controller: feeCommissionController,
                             onChanged: (value) => {
                               setState(() {
                                 trade['feeCommission'] = double.parse(value);
@@ -334,7 +359,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             },
                             keyboardType: TextInputType.number,
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9.]')),
                             ],
                             decoration: const InputDecoration(
                               hintText: '\$0.1',
@@ -370,11 +396,18 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                 color: const Color(0xff2B2B2F),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                 child: TextField(
+                  controller: notesController,
+                  onChanged: (value) => {
+                    setState(() {
+                      trade['notes'] = value;
+                    })
+                  },
                   maxLines: 5,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       //hint long text about trade notes
                       hintText: 'What did you learn from this trade?',
                       border: InputBorder.none),
@@ -399,11 +432,10 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           'Show Advanced',
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 18),
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
                       Icon(
@@ -498,7 +530,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              onPressed: () {},
+              onPressed: checkConditionCanSave() ? () {} : null,
               child: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0),
                 child: Center(

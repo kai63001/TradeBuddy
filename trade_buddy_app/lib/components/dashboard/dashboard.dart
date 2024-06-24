@@ -4,6 +4,7 @@ import 'package:trade_buddy_app/components/dashboard/account/selection_profile_s
 import 'package:trade_buddy_app/components/dashboard/card_overview_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_recent_trades_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_today_main.dart';
+import 'package:trade_buddy_app/store/profile_store.dart';
 import 'package:trade_buddy_app/store/select_profile_store.dart';
 
 class Dashboard extends StatefulWidget {
@@ -44,8 +45,12 @@ class _DashboardState extends State<Dashboard> {
                   children: [
                     BlocBuilder<SelectProfileStore, String>(
                       builder: (BuildContext context, String state) {
+                        List<Map<String, dynamic>> rawProfiles =
+                            context.read<ProfileStore>().state;
                         return Text(
-                          state,
+                          context
+                              .read<SelectProfileStore>()
+                              .getProfileName(state, rawProfiles),
                           style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,

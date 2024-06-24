@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,12 +19,10 @@ class SelectProfileStore extends Cubit<String> {
     emit(selectedProfile);
   }
 
-  Future<String> getProfileName() async {
-    final prefs = await SharedPreferences.getInstance();
-    final rawProfiles = prefs.getStringList('profileList') ?? [];
-    final profiles = rawProfiles.map((e) => jsonDecode(e)).toList();
+  String getProfileName(
+      String profileId, List<Map<String, dynamic>> rawProfiles) {
     final profile =
-        profiles.firstWhere((element) => element['id'] == state);
+        rawProfiles.firstWhere((element) => element['id'] == profileId);
     return profile['name'];
   }
 }

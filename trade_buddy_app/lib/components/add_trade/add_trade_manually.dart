@@ -33,6 +33,7 @@ class AddTrandingManuallyPage extends StatefulWidget {
 class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
   DateFormat formattedDate = DateFormat('dd-MMMM-yyyy');
   DateFormat formatTime = DateFormat('kk:mm');
+  bool showAdvanced = false;
 
   DateTime now = DateTime.now();
 
@@ -46,6 +47,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     'feeCommission': null,
     'strategies': [],
     'feelingsMistakes': [],
+    'endDateTime': null,
+    'screenshot': [],
     'notes': '',
   };
 
@@ -109,7 +112,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text('Date and time'),
+            const Text('Entry Date & Time'),
             const SizedBox(height: 5),
             //selection date and time with label
             GestureDetector(
@@ -378,11 +381,119 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            //show advanced
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  showAdvanced = !showAdvanced;
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xff2B2B2F),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Show Advanced',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 18),
+                        ),
+                      ),
+                      Icon(
+                        showAdvanced
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (showAdvanced)
+              //selection date and time with label
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  const Text('End Date & Time (Optional)'),
+                  const SizedBox(height: 5),
+                  GestureDetector(
+                    onTap: () => {
+                      picker.DatePicker.showDateTimePicker(context,
+                          showTitleActions: true,
+                          onChanged: (date) {}, onConfirm: (date) {
+                        setState(() {
+                          trade['endDateTime'] = date;
+                        });
+                      },
+                          currentTime: DateTime.now(),
+                          locale: picker.LocaleType.en,
+                          theme: const picker.DatePickerTheme(
+                            backgroundColor: Color(0xff222222),
+                            itemStyle: TextStyle(color: Colors.white),
+                            doneStyle: TextStyle(color: Colors.white),
+                            cancelStyle: TextStyle(color: Colors.white),
+                          ))
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xff2B2B2F),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: Center(
+                                child: Text(
+                                  formattedDate.format(trade['date']),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: const Color(0xff2B2B2F),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Center(
+                              child: Text(
+                                formatTime.format(trade['date']),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             //Button Save Trade
             const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: const Color.fromARGB(255, 26, 26, 27),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -393,11 +504,11 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                 child: Center(
                   child: Row(
                     children: [
-                      Icon(Icons.save, color: Colors.black),
+                      Icon(Icons.save, color: Colors.white),
                       SizedBox(width: 30),
                       Text(
                         'Save Trade',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                     ],
                   ),

@@ -63,7 +63,7 @@ class _SelectionProfileStateState extends State<SelectionProfileState> {
                 if (i == profiles.length) {
                   return Container(
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 26, 26, 27),
+                      color: const Color.fromARGB(255, 26, 26, 27),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     margin:

@@ -88,7 +88,7 @@ class CustomNavBar extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white, // background color
+                    backgroundColor: const Color.fromARGB(255, 26, 26, 27), // background color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // radius value
                     ),
@@ -101,10 +101,10 @@ class CustomNavBar extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 12.0),
                     child: Row(
                       children: [
-                        Icon(Icons.add, color: Colors.black),
+                        Icon(Icons.add, color: Colors.white),
                         SizedBox(width: 30),
                         Text('Enter Trade Manually',
-                            style: TextStyle(color: Colors.black)),
+                            style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),
@@ -115,7 +115,7 @@ class CustomNavBar extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white, // background color
+                    backgroundColor: const Color.fromARGB(255, 26, 26, 27), // background color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // radius value
                     ),
@@ -127,10 +127,10 @@ class CustomNavBar extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 12.0),
                     child: Row(
                       children: [
-                        Icon(Icons.image, color: Colors.black),
+                        Icon(Icons.image, color: Colors.white),
                         SizedBox(width: 30),
                         Text('Upload Screenshot',
-                            style: TextStyle(color: Colors.black)),
+                            style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),
@@ -141,7 +141,7 @@ class CustomNavBar extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white, // background color
+                    backgroundColor: const Color.fromARGB(255, 26, 26, 27), // background color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // radius value
                     ),
@@ -153,10 +153,10 @@ class CustomNavBar extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 12.0),
                     child: Row(
                       children: [
-                        Icon(Icons.upload_file, color: Colors.black),
+                        Icon(Icons.upload_file, color: Colors.white),
                         SizedBox(width: 30),
                         Text('Import Trade Data',
-                            style: TextStyle(color: Colors.black)),
+                            style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),

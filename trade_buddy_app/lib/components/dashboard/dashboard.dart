@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trade_buddy_app/components/dashboard/account/selection_profile_state.dart';
 import 'package:trade_buddy_app/components/dashboard/card_overview_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_recent_trades_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_today_main.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({
     super.key,
   });
 
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,17 +40,21 @@ class Dashboard extends StatelessWidget {
                 onPressed: () {
                   selectProfile(context);
                 },
-                child: const Row(
+                child: Row(
                   children: [
-                    Text(
-                      'FTMO 100K Challenge',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15),
+                    BlocBuilder<SelectProfileStore, String>(
+                      builder: (BuildContext context, String state) {
+                        return Text(
+                          state,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15),
+                        );
+                      },
                     ),
-                    SizedBox(width: 5),
-                    Icon(
+                    const SizedBox(width: 5),
+                    const Icon(
                       Icons.keyboard_arrow_down,
                       color: Colors.white,
                     ),

@@ -81,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> checkHaveAnyProfileOrNot() async {
     await context.read<ProfileStore>().initProfileList();
+    await context.read<SelectProfileStore>().initSelectedProfile();
     final profileStore = context.read<ProfileStore>();
     if (profileStore.state.isNotEmpty) {
       setState(() {

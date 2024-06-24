@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trade_buddy_app/main.dart';
 import 'package:trade_buddy_app/store/profile_store.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
 
 class CreateProfileGoalsPage extends StatefulWidget {
   const CreateProfileGoalsPage(
@@ -26,10 +28,11 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
   }
 
   void createProfile() {
+    String id = DateTime.now().millisecondsSinceEpoch.toString();
     // save profile to database
     context.read<ProfileStore>().addProfile(
           jsonEncode({
-            'id': DateTime.now().millisecondsSinceEpoch,
+            'id': id,
             'name': widget.nameProfile,
             'type': widget.type,
             'dailyGoal': dailyGoal,
@@ -38,6 +41,8 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
             'yearlyGoal': yearlyGoal,
           }),
         );
+    //set selected profile
+    context.read<SelectProfileStore>().selectProfile(id);
 
     //Navigator with remove until
     Navigator.pushAndRemoveUntil(
@@ -86,6 +91,8 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
                       dailyGoal = int.parse(value);
                     })
                   },
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: const InputDecoration(
                       hintText: '200',
                       fillColor: Color(0xff2B2B2F),
@@ -120,6 +127,8 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
                       weeklyGoal = int.parse(value);
                     })
                   },
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: const InputDecoration(
                       hintText: '1000',
                       fillColor: Color(0xff2B2B2F),
@@ -154,6 +163,8 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
                       monthlyGoal = int.parse(value);
                     })
                   },
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: const InputDecoration(
                       hintText: '5000',
                       fillColor: Color(0xff2B2B2F),
@@ -188,6 +199,8 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
                       yearlyGoal = int.parse(value);
                     })
                   },
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: const InputDecoration(
                       hintText: '10000',
                       fillColor: Color(0xff2B2B2F),

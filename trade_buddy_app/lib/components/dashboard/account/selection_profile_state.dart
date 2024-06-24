@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trade_buddy_app/page/create_profile/create_profile_page.dart';
+import 'package:trade_buddy_app/store/profile_store.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
 
 class SelectionProfileState extends StatefulWidget {
   const SelectionProfileState({
@@ -10,6 +14,20 @@ class SelectionProfileState extends StatefulWidget {
 }
 
 class _SelectionProfileStateState extends State<SelectionProfileState> {
+  List<Map<String, dynamic>> profiles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getProfiles();
+  }
+
+  void getProfiles() {
+    setState(() {
+      profiles = context.read<ProfileStore>().state;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,26 +58,57 @@ class _SelectionProfileStateState extends State<SelectionProfileState> {
           //list of challenges
           Expanded(
             child: ListView.builder(
-              itemCount: 3,
+              itemCount: profiles.length + 1,
               itemBuilder: (_, i) {
+                if (i == profiles.length) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 26, 26, 27),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    child: ListTile(
+                      title: const Text(
+                        'Create New Profile',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        //navigate to create profile
+                        Navigator.pop(context);
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const CreateProfilePage();
+                        }));
+                      },
+                    ),
+                  );
+                }
                 return Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color.fromARGB(255, 207, 207, 207),
-                    ),
+                    color: const Color(0xff2B2B2F),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   margin:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: ListTile(
-                    title: const Center(
-                      child: Text(
-                        'FTMO 100K Challenge',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    title: Text(
+                      profiles[i]['name'],
+                      style: const TextStyle(color: Colors.white),
                     ),
+                    trailing: context.read<SelectProfileStore>().state ==
+                            profiles[i]['id'].toString()
+                        ? const Icon(Icons.check, color: Colors.white)
+                        : null,
                     onTap: () {
                       //navigate to challenge
+                      debugPrint('Selected Profile: ${profiles[i]['id']}');
+
+                      context
+                          .read<SelectProfileStore>()
+                          .selectProfile(profiles[i]['id'].toString());
+
+                      Navigator.pop(context);
                     },
                   ),
                 );

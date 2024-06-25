@@ -131,7 +131,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextField(
-                  controller: TextEditingController(text: trade['symbol']),
+                  controller: symbolController,
                   decoration: const InputDecoration(
                     hintText: 'AAPL',
                     labelStyle: TextStyle(color: Colors.white),

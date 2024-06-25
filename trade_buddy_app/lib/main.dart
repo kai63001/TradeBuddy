@@ -150,7 +150,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ));
     }
-    if (profiles.isEmpty) return const CreateProfilePage();
+    if (profiles.isEmpty) {
+      return const CreateProfilePage(
+        first: true,
+      );
+    }
     return PersistentTabView(
       tabs: _tabs(),
       navBarBuilder: (navBarConfig) => CustomNavBar(

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:trade_buddy_app/page/create_profile/create_profile_goals_page.dart';
 
 class CreateProfilePage extends StatefulWidget {
-  const CreateProfilePage({super.key});
+  const CreateProfilePage({super.key, this.first = false});
+
+  final bool first;
 
   @override
   State<CreateProfilePage> createState() => _CreateProfilePageState();
@@ -19,7 +21,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                CreateProfileGoalsPage(nameProfile: nameProfile, type: type)));
+                CreateProfileGoalsPage(nameProfile: nameProfile, type: type, first: widget.first,)));
   }
 
   bool checkCondition() {

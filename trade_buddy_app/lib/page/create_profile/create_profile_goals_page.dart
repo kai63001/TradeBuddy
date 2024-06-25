@@ -3,15 +3,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trade_buddy_app/components/dashboard/dashboard.dart';
 import 'package:trade_buddy_app/main.dart';
 import 'package:trade_buddy_app/store/profile_store.dart';
 import 'package:trade_buddy_app/store/select_profile_store.dart';
 
 class CreateProfileGoalsPage extends StatefulWidget {
   const CreateProfileGoalsPage(
-      {super.key, required this.nameProfile, required this.type});
+      {super.key,
+      required this.nameProfile,
+      required this.type,
+      this.first = false});
   final String nameProfile;
   final String type;
+  final bool first;
 
   @override
   State<CreateProfileGoalsPage> createState() => _CreateProfileGoalsPageState();
@@ -44,10 +49,17 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
     //set selected profile
     context.read<SelectProfileStore>().selectProfile(id);
 
+    if (widget.first) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+          (route) => false);
+      return;
+    }
     //Navigator with remove until
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const MyHomePage()),
+        MaterialPageRoute(builder: (context) => const Dashboard()),
         (route) => false);
   }
 

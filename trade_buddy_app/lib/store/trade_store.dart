@@ -3,53 +3,51 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class TradeStore extends Cubit<List<Map<String, dynamic>>> {
-  TradeStore() : super([]) {
-    initTradeList();
-  }
+class TradeStore extends Cubit<Map<String, List<Map<String, dynamic>>>> {
+  TradeStore() : super({});
 
-  Future<void> addTrade(String tradeData) async {
+  Future<void> addTrade(String tradeData, String profileId) async {
     final prefs = await SharedPreferences.getInstance();
-    final trades = state;
+    final trades = state[profileId] ?? [];
     final newTrades = [...trades, jsonDecode(tradeData)];
-    prefs.setStringList(
-        'tradeList', newTrades.map((e) => jsonEncode(e)).toList());
-    emit(newTrades.cast<Map<String, dynamic>>());
+    await prefs.setStringList(
+        'tradeList_$profileId', newTrades.map((e) => jsonEncode(e)).toList());
+    emit(
+        {...state, profileId: newTrades.cast<Map<String, dynamic>>().toList()});
   }
 
-  Future<void> initTradeList() async {
+  Future<void> initTradeList(String profileId) async {
     final prefs = await SharedPreferences.getInstance();
-    final rawTrades = prefs.getStringList('tradeList') ?? [];
+    final rawTrades = prefs.getStringList('tradeList_$profileId') ?? [];
     final trades = rawTrades.map((e) => jsonDecode(e)).toList();
-    emit(trades.cast<Map<String, dynamic>>());
+    emit({...state, profileId: trades.cast<Map<String, dynamic>>().toList()});
   }
 
-  Future<void> deleteTrade(String id) async {
+  Future<void> deleteTrade(String id, String profileId) async {
     final prefs = await SharedPreferences.getInstance();
-    final trades = state;
-    final newTrades = trades.where((element) => element['id'] != id).toList();
+    final trades = state[profileId] ?? [];
+    final newTrades =
+        trades.where((element) => element['id'] != id).toList();
     prefs.setStringList(
-        'tradeList', newTrades.map((e) => jsonEncode(e)).toList());
-    emit(newTrades.cast<Map<String, dynamic>>());
+        'tradeList_$profileId', newTrades.map((e) => jsonEncode(e)).toList());
+    emit(
+        {...state, profileId: newTrades.cast<Map<String, dynamic>>().toList()});
   }
 
-  Future<void> updateDisplayNameWithId(String id, String displayName) async {
+  Future<void> updateDisplayNameWithId(
+      String tradeData, String profileId) async {
     final prefs = await SharedPreferences.getInstance();
-    final trades = state;
+    final trades = state[profileId] ?? [];
+    final tradeDataDecode = jsonDecode(tradeData);
     final newTrades = trades.map((e) {
-      if (e['id'] == id) {
-        e['displayName'] = displayName;
+      if (e['id'] == tradeDataDecode['id']) {
+        e = tradeDataDecode;
       }
       return e;
     }).toList();
     prefs.setStringList(
         'tradeList', newTrades.map((e) => jsonEncode(e)).toList());
-    emit(newTrades.cast<Map<String, dynamic>>());
-  }
-
-  Future<void> clear() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('tradeList');
-    emit([]);
+    emit(
+        {...state, profileId: newTrades.cast<Map<String, dynamic>>().toList()});
   }
 }

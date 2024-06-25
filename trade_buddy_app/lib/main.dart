@@ -10,6 +10,7 @@ import 'package:trade_buddy_app/components/dashboard/dashboard.dart';
 import 'package:trade_buddy_app/page/create_profile/create_profile_page.dart';
 import 'package:trade_buddy_app/store/profile_store.dart';
 import 'package:trade_buddy_app/store/select_profile_store.dart';
+import 'package:trade_buddy_app/store/trade_store.dart';
 import 'package:unicons/unicons.dart';
 
 void main() {
@@ -30,7 +31,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ProfileStore()),
-        BlocProvider(create: (_) => SelectProfileStore())
+        BlocProvider(create: (_) => SelectProfileStore()),
+        BlocProvider(create: (_) => TradeStore()),
       ],
       child: MaterialApp(
         title: 'TradeBuddy',

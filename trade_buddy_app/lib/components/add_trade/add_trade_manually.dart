@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:intl/intl.dart';
 import 'package:trade_buddy_app/components/add_trade/components/feeling_mistake_selection.dart';
 import 'package:trade_buddy_app/components/add_trade/components/strategies_selection_components.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
+import 'package:trade_buddy_app/store/trade_store.dart';
 
 void showAddTradeManually(BuildContext context) {
   showModalBottomSheet(
@@ -55,7 +60,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
 
   Map<String, dynamic> trade = {
     'symbol': '',
-    'date': DateTime.now(),
+    'date': DateTime.now().toIso8601String(),
     'tradeSide': 'LONG',
     'entryPrice': null,
     'exitPrice': null,
@@ -86,6 +91,18 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
         trade['exitPrice'] != null &&
         trade['lotSize'] != null &&
         trade['feeCommission'] != null;
+  }
+
+  void saveTrade() {
+    //add id to trade
+    trade['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+    // convert jsonEncode
+    final String tradeString = jsonEncode(trade);
+    // get profile id
+    final String profileId = context.read<SelectProfileStore>().state;
+
+    // save trade to local storage
+    context.read<TradeStore>().addTrade(tradeString, profileId);
   }
 
   @override
@@ -180,7 +197,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             horizontal: 10, vertical: 10),
                         child: Center(
                           child: Text(
-                            formattedDate.format(trade['date']),
+                            formattedDate.format(DateTime.parse(trade['date'])),
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 18),
                           ),
@@ -200,7 +217,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                           horizontal: 10, vertical: 10),
                       child: Center(
                         child: Text(
-                          formatTime.format(trade['date']),
+                          formatTime.format(DateTime.parse(trade['date'])),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 18),
                         ),
@@ -489,7 +506,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                                   horizontal: 10, vertical: 10),
                               child: Center(
                                 child: Text(
-                                  formattedDate.format(trade['date']),
+                                  formattedDate
+                                      .format(DateTime.parse(trade['date'])),
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 18),
                                 ),
@@ -509,7 +527,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                                 horizontal: 10, vertical: 10),
                             child: Center(
                               child: Text(
-                                formatTime.format(trade['date']),
+                                formatTime
+                                    .format(DateTime.parse(trade['date'])),
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 18),
                               ),
@@ -530,7 +549,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              onPressed: checkConditionCanSave() ? () {} : null,
+              onPressed: checkConditionCanSave() ? saveTrade : null,
               child: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0),
                 child: Center(

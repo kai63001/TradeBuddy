@@ -8,6 +8,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:trade_buddy_app/components/custom_navbar.dart';
 import 'package:trade_buddy_app/components/dashboard/dashboard.dart';
 import 'package:trade_buddy_app/page/create_profile/create_profile_page.dart';
+import 'package:trade_buddy_app/page/jurnal/trade_jurnal_page.dart';
 import 'package:trade_buddy_app/store/profile_store.dart';
 import 'package:trade_buddy_app/store/select_profile_store.dart';
 import 'package:trade_buddy_app/store/trade_store.dart';
@@ -107,13 +108,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         PersistentTabConfig(
-          screen: const Dashboard(),
+          screen: const TradeJurnalPage(),
           item: ItemConfig(
             icon: const Icon(
-              UniconsLine.dashboard,
+              UniconsLine.book_open,
               size: 25,
             ),
-            title: "Performance",
+            title: "Journal",
           ),
         ),
         PersistentTabConfig(

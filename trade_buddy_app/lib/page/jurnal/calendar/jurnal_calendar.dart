@@ -7,7 +7,8 @@ import 'package:trade_buddy_app/store/select_profile_store.dart';
 import 'package:trade_buddy_app/store/trade_store.dart';
 
 class JurnalCalendar extends StatefulWidget {
-  const JurnalCalendar({super.key});
+  final Function? updateSelection;
+  const JurnalCalendar({super.key, required this.updateSelection});
 
   @override
   State<JurnalCalendar> createState() => _JurnalCalendarState();
@@ -34,6 +35,7 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
       });
+      widget.updateSelection!(selectedDay);
     }
   }
 

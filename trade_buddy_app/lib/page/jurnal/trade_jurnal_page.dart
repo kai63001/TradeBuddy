@@ -9,6 +9,14 @@ class TradeJurnalPage extends StatefulWidget {
 }
 
 class _TradeJurnalPageState extends State<TradeJurnalPage> {
+  DateTime _selectedDay = DateTime.now();
+
+  void updateSelection(DateTime date) {
+    setState(() {
+      _selectedDay = date;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,10 +29,12 @@ class _TradeJurnalPageState extends State<TradeJurnalPage> {
         ),
       ),
       body: ListView(
-        children: const [
+        children: [
           Padding(
-            padding: EdgeInsets.all(10.0),
-            child: JurnalCalendar(),
+            padding: const EdgeInsets.all(10.0),
+            child: JurnalCalendar(
+              updateSelection: updateSelection,
+            ),
           ),
         ],
       ),

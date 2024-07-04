@@ -103,6 +103,9 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
 
     // save trade to local storage
     context.read<TradeStore>().addTrade(tradeString, profileId);
+
+    // close modal
+    Navigator.pop(context);
   }
 
   @override
@@ -172,7 +175,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                     showTitleActions: true,
                     onChanged: (date) {}, onConfirm: (date) {
                   setState(() {
-                    trade['date'] = date;
+                    trade['date'] = date.toIso8601String();
                   });
                 },
                     currentTime: DateTime.now(),
@@ -197,7 +200,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             horizontal: 10, vertical: 10),
                         child: Center(
                           child: Text(
-                            formattedDate.format(DateTime.parse(trade['date'])),
+                            formattedDate.format(
+                                DateTime.parse(trade['date'].toString())),
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 18),
                           ),
@@ -217,7 +221,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                           horizontal: 10, vertical: 10),
                       child: Center(
                         child: Text(
-                          formatTime.format(DateTime.parse(trade['date'])),
+                          formatTime
+                              .format(DateTime.parse(trade['date'].toString())),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 18),
                         ),

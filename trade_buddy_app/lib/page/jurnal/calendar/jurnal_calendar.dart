@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:trade_buddy_app/helper/calculate_trading.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
+import 'package:trade_buddy_app/store/trade_store.dart';
 
 class JurnalCalendar extends StatefulWidget {
   const JurnalCalendar({super.key});
@@ -18,6 +22,11 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
       DateTime.now().year, DateTime.now().month - 10, DateTime.now().day);
   final kLastDay = DateTime(
       DateTime.now().year, DateTime.now().month + 10, DateTime.now().day);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
@@ -48,7 +57,7 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
           margin: const EdgeInsets.all(4.0),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: const Color(0xff2B2B2F),
+            color: calculateRedDayOrGreenColor(day.toString(), context.read<TradeStore>().state, context.read<SelectProfileStore>().state),
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Text(
@@ -73,7 +82,7 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
               margin: const EdgeInsets.all(4.0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xff2B2B2F),
+              color: calculateRedDayOrGreenColor(day.toString(), context.read<TradeStore>().state, context.read<SelectProfileStore>().state),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Text(

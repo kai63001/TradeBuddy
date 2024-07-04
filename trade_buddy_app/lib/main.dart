@@ -82,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
     checkHaveAnyProfileOrNot();
   }
 
+
   Future<void> checkHaveAnyProfileOrNot() async {
     await context.read<ProfileStore>().initProfileList();
     await context.read<SelectProfileStore>().initSelectedProfile();
@@ -90,6 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         profiles = profileStore.state;
       });
+      final profileId = await context.read<SelectProfileStore>().state;
+      await context.read<TradeStore>().initTradeList(profileId);
     }
     setState(() {
       loading = false;

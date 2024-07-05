@@ -23,6 +23,13 @@ class TradeStore extends Cubit<Map<String, List<Map<String, dynamic>>>> {
     emit({...state, profileId: trades.cast<Map<String, dynamic>>().toList()});
   }
 
+  Future<List<Map<String, dynamic>>> getTradeList(String profileId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final rawTrades = prefs.getStringList('tradeList_$profileId') ?? [];
+    final trades = rawTrades.map((e) => jsonDecode(e)).toList();
+    return trades.cast<Map<String, dynamic>>().toList();
+  }
+
   Future<void> deleteTrade(String id, String profileId) async {
     final prefs = await SharedPreferences.getInstance();
     final trades = state[profileId] ?? [];

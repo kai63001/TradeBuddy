@@ -62,9 +62,19 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
             color: calculateRedDayOrGreenColor(day.toString(), context.read<TradeStore>().state, context.read<SelectProfileStore>().state),
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: Text(
-            day.day.toString(),
-            style: const TextStyle(color: Colors.white),
+          child: Column(
+            //space between day and price
+            children: [
+              const SizedBox(height: 4),
+              Text(
+                day.day.toString(),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const Text(
+                '\$2',
+                style: TextStyle(color: Colors.white,fontSize: 12),
+              ),
+            ],
           ),
         ),
         selectedBuilder: (context, day, focusedDay) => Container(
@@ -74,9 +84,13 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
             color: const Color.fromARGB(255, 80, 80, 82),
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: Text(
-            day.day.toString(),
-            style: const TextStyle(color: Colors.white),
+          child: Column(
+            children: [
+              Text(
+                day.day.toString(),
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
           ),
         ),
         todayBuilder: (context, day, _) {
@@ -87,9 +101,13 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
               color: calculateRedDayOrGreenColor(day.toString(), context.read<TradeStore>().state, context.read<SelectProfileStore>().state),
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: Text(
-                day.day.toString(),
-                style: const TextStyle(color: Colors.white),
+              child: Column(
+                children: [
+                  Text(
+                    day.day.toString(),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
               ));
         },
         dowBuilder: (context, day) {

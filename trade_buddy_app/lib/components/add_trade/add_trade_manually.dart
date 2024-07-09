@@ -8,6 +8,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 import 'package:intl/intl.dart';
 import 'package:trade_buddy_app/components/add_trade/components/feeling_mistake_selection.dart';
 import 'package:trade_buddy_app/components/add_trade/components/strategies_selection_components.dart';
+import 'package:trade_buddy_app/helper/calculate_trading.dart';
 import 'package:trade_buddy_app/store/select_profile_store.dart';
 import 'package:trade_buddy_app/store/trade_store.dart';
 
@@ -58,6 +59,75 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
 
   DateTime now = DateTime.now();
 
+  List<Map<String, dynamic>> futuresContracts = [
+    {
+      'name': 'S&P 500 E-Mini',
+      'symbol': 'ES',
+      'tickSize': 0.25,
+      'tickValue': 12.5,
+    },
+    {
+      'name': 'S&P 500 Micro E-Mini',
+      'symbol': 'MES',
+      'tickSize': 0.25,
+      'tickValue': 1.25,
+    },
+    {
+      'name': 'Nasdaq 100 E-Mini',
+      'symbol': 'NQ',
+      'tickSize': 0.25,
+      'tickValue': 5,
+    },
+    {
+      'name': 'Nasdaq 100 Micro E-Mini',
+      'symbol': 'MNQ',
+      'tickSize': 0.25,
+      'tickValue': 0.5,
+    },
+    {
+      'name': 'Dow Jones E-Mini',
+      'symbol': 'YM',
+      'tickSize': 1,
+      'tickValue': 5,
+    },
+    {
+      'name': 'Dow Jones Micro E-Mini',
+      'symbol': 'MYM',
+      'tickSize': 1,
+      'tickValue': 0.5,
+    },
+    {
+      'name': 'Russell 2000 E-Mini',
+      'symbol': 'RTY',
+      'tickSize': 0.1,
+      'tickValue': 5,
+    },
+    {
+      'name': 'Russell 2000 Micro E-Mini',
+      'symbol': 'M2K',
+      'tickSize': 0.1,
+      'tickValue': 0.5,
+    },
+    {
+      'name': 'Gold Futures',
+      'symbol': 'GC',
+      'tickSize': 0.1,
+      'tickValue': 10,
+    },
+    {
+      'name': 'Gold E-Mini',
+      'symbol': 'QO',
+      'tickSize': 0.25,
+      'tickValue': 12.5,
+    },
+    {
+      'name': 'Gold E-Micro',
+      'symbol': 'MGC',
+      'tickSize': 0.1,
+      'tickValue': 1,
+    }
+  ];
+
   Map<String, dynamic> trade = {
     'symbol': '',
     'date': DateTime.now().toIso8601String(),
@@ -89,8 +159,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     return trade['symbol'].isNotEmpty &&
         trade['entryPrice'] != null &&
         trade['exitPrice'] != null &&
-        trade['lotSize'] != null &&
-        trade['feeCommission'] != null;
+        trade['lotSize'] != null;
   }
 
   void saveTrade() {
@@ -259,9 +328,10 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                           child: TextField(
                             controller: entryPriceController,
                             onChanged: (value) => {
-                              setState(() {
-                                trade['entryPrice'] = double.parse(value);
-                              })
+                              if (value.isNotEmpty)
+                                setState(() {
+                                  trade['entryPrice'] = double.parse(value);
+                                })
                             },
                             keyboardType: TextInputType.number,
                             inputFormatters: [
@@ -296,9 +366,10 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                           child: TextField(
                             controller: exitPriceController,
                             onChanged: (value) => {
-                              setState(() {
-                                trade['exitPrice'] = double.parse(value);
-                              })
+                              if (value.isNotEmpty)
+                                setState(() {
+                                  trade['exitPrice'] = double.parse(value);
+                                })
                             },
                             keyboardType: TextInputType.number,
                             inputFormatters: [
@@ -338,9 +409,11 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                           child: TextField(
                             controller: lotSizeController,
                             onChanged: (value) => {
-                              setState(() {
-                                trade['lotSize'] = int.parse(value);
-                              })
+                              if (value.isNotEmpty)
+                                setState(() {
+                                  trade['lotSize'] =
+                                      double.parse(value.toString());
+                                })
                             },
                             keyboardType: TextInputType.number,
                             inputFormatters: [
@@ -375,9 +448,96 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                           child: TextField(
                             controller: feeCommissionController,
                             onChanged: (value) => {
-                              setState(() {
-                                trade['feeCommission'] = double.parse(value);
-                              })
+                              if (value.isNotEmpty)
+                                setState(() {
+                                  trade['feeCommission'] = double.parse(value);
+                                })
+                            },
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9.]')),
+                            ],
+                            decoration: const InputDecoration(
+                              hintText: '\$0.1',
+                              labelStyle: TextStyle(color: Colors.white),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Gross Profit'),
+                      Text(calculateProfit(
+                              tradeSide: trade['tradeSide'],
+                              type: 'FUTURE',
+                              entryPrice: trade['entryPrice'] ?? 0,
+                              exitPrice: trade['exitPrice'] ?? 0,
+                              quantity: trade['lotSize'] ?? 0)
+                          .toString()),
+                      const SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff2B2B2F),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextField(
+                            onChanged: (value) => {
+                              if (value.isNotEmpty)
+                                setState(() {
+                                  trade['grossProfit'] = int.parse(value);
+                                })
+                            },
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9.]'))
+                            ],
+                            decoration: const InputDecoration(
+                              hintText: '200',
+                              labelStyle: TextStyle(color: Colors.white),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Fee & Commission'),
+                      const SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff2B2B2F),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextField(
+                            controller: feeCommissionController,
+                            onChanged: (value) => {
+                              if (value.isNotEmpty)
+                                setState(() {
+                                  trade['feeCommission'] = double.parse(value);
+                                })
                             },
                             keyboardType: TextInputType.number,
                             inputFormatters: [
@@ -424,9 +584,10 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                 child: TextField(
                   controller: notesController,
                   onChanged: (value) => {
-                    setState(() {
-                      trade['notes'] = value;
-                    })
+                    if (value.isNotEmpty)
+                      setState(() {
+                        trade['notes'] = value;
+                      })
                   },
                   maxLines: 5,
                   decoration: const InputDecoration(

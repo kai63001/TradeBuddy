@@ -594,20 +594,28 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                               text: calculateProfit(
                                       tradeSide: trade['tradeSide'],
                                       type: profileType.toUpperCase(),
-                                      trickSize: profileType.toUpperCase() ==
-                                              "FUTURES"
-                                          ? futuresContracts.firstWhere(
-                                              (element) =>
-                                                  element['symbol'] ==
-                                                  trade['symbol'])['tickSize']
-                                          : 0,
-                                      trickValue: profileType.toUpperCase() ==
-                                              "FUTURES"
-                                          ? futuresContracts.firstWhere(
-                                              (element) =>
-                                                  element['symbol'] ==
-                                                  trade['symbol'])['tickValue']
-                                          : 0,
+                                      trickSize:
+                                          profileType.toUpperCase() == "FUTURES"
+                                              ? futuresContracts.firstWhere(
+                                                  (element) =>
+                                                      element['symbol'] ==
+                                                      trade['symbol'],
+                                                  orElse: () => {
+                                                    'tickSize': 0
+                                                  }, // Provide a fallback map with a default 'tickSize'
+                                                )['tickSize']
+                                              : 0,
+                                      trickValue:
+                                          profileType.toUpperCase() == "FUTURES"
+                                              ? futuresContracts.firstWhere(
+                                                  (element) =>
+                                                      element['symbol'] ==
+                                                      trade['symbol'],
+                                                  orElse: () => {
+                                                    'tickValue': 0
+                                                  }, // Provide a fallback map with a default 'tickValue'
+                                                )['tickValue']
+                                              : 0,
                                       entryPrice: trade['entryPrice'] ?? 0,
                                       exitPrice: trade['exitPrice'] ?? 0,
                                       quantity: trade['lotSize'] ?? 0)
@@ -647,26 +655,40 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                           child: TextField(
                             controller: TextEditingController(
                               text: (double.parse(calculateProfit(
-                                      tradeSide: trade['tradeSide'],
-                                      type: profileType.toUpperCase(),
-                                      trickSize: profileType.toUpperCase() ==
-                                              "FUTURES"
-                                          ? futuresContracts.firstWhere(
-                                              (element) =>
-                                                  element['symbol'] ==
-                                                  trade['symbol'])['tickSize']
-                                          : 0,
-                                      trickValue: profileType.toUpperCase() ==
-                                              "FUTURES"
-                                          ? futuresContracts.firstWhere(
-                                              (element) =>
-                                                  element['symbol'] ==
-                                                  trade['symbol'])['tickValue']
-                                          : 0,
-                                      entryPrice: trade['entryPrice'] ?? 0,
-                                      exitPrice: trade['exitPrice'] ?? 0,
-                                      quantity: trade['lotSize'] ?? 0)
-                                  .toString()) - (trade['feeCommission'] ?? 0)).toString(),
+                                              tradeSide: trade['tradeSide'],
+                                              type: profileType.toUpperCase(),
+                                              trickSize: profileType
+                                                          .toUpperCase() ==
+                                                      "FUTURES"
+                                                  ? futuresContracts.firstWhere(
+                                                      (element) =>
+                                                          element['symbol'] ==
+                                                          trade['symbol'],
+                                                      orElse: () => {
+                                                        'tickSize': 0
+                                                      }, // Provide a fallback map with a default 'tickSize'
+                                                    )['tickSize']
+                                                  : 0,
+                                              trickValue: profileType
+                                                          .toUpperCase() ==
+                                                      "FUTURES"
+                                                  ? futuresContracts.firstWhere(
+                                                      (element) =>
+                                                          element['symbol'] ==
+                                                          trade['symbol'],
+                                                      orElse: () => {
+                                                        'tickValue': 0
+                                                      }, // Provide a fallback map with a default 'tickValue'
+                                                    )['tickValue']
+                                                  : 0,
+                                              entryPrice:
+                                                  trade['entryPrice'] ?? 0,
+                                              exitPrice:
+                                                  trade['exitPrice'] ?? 0,
+                                              quantity: trade['lotSize'] ?? 0)
+                                          .toString()) -
+                                      (trade['feeCommission'] ?? 0))
+                                  .toString(),
                             ),
                             readOnly: true,
                             keyboardType: TextInputType.number,
@@ -722,7 +744,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                   maxLines: 5,
                   decoration: const InputDecoration(
                       //hint long text about trade notes
-                      hintText: 'What did you learn from this trade?',
+                      hintText:
+                          'Summarize your learnings: Strategy effectiveness, unexpected outcomes, market impact, and potential improvements.',
                       border: InputBorder.none),
                 ),
               ),
@@ -737,7 +760,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xff2B2B2F),
+                  color: const Color.fromARGB(255, 28, 28, 32),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Padding(
@@ -975,7 +998,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xff2B2B2F),
+          color: const Color.fromARGB(255, 28, 28, 32),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(
@@ -1014,7 +1037,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xff2B2B2F),
+          color: const Color.fromARGB(255, 28, 28, 32),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(

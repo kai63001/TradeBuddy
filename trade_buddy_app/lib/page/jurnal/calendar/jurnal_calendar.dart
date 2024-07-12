@@ -59,7 +59,7 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
           margin: const EdgeInsets.all(4.0),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: calculateRedDayOrGreenColor(day.toString(), context.read<TradeStore>().state, context.read<SelectProfileStore>().state),
+            color: calculateRedDayOrGreenColor(day.toString(), context.read<TradeStore>().state, context.watch<SelectProfileStore>().state),
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Column(

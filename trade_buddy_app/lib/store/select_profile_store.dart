@@ -25,4 +25,11 @@ class SelectProfileStore extends Cubit<String> {
         rawProfiles.firstWhere((element) => element['id'] == profileId);
     return profile['name'];
   }
+
+  String getProfileType(
+      String profileId, List<Map<String, dynamic>> rawProfiles) {
+    final profile =
+        rawProfiles.firstWhere((element) => element['id'] == profileId);
+    return profile['type'];
+  }
 }

@@ -6,9 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trade_buddy_app/components/add_trade/components/feeling_mistake_selection.dart';
 import 'package:trade_buddy_app/components/add_trade/components/strategies_selection_components.dart';
 import 'package:trade_buddy_app/helper/calculate_trading.dart';
+import 'package:trade_buddy_app/store/profile_store.dart';
 import 'package:trade_buddy_app/store/select_profile_store.dart';
 import 'package:trade_buddy_app/store/trade_store.dart';
 
@@ -40,6 +42,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
   DateFormat formattedDate = DateFormat('dd-MMMM-yyyy');
   DateFormat formatTime = DateFormat('kk:mm');
   bool showAdvanced = false;
+  String profileType = '';
 
   //Controller
   final Map<String, TextEditingController> _controllers = {};
@@ -48,13 +51,6 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
       _controllers[key] = TextEditingController(text: initialValue);
     }
     return _controllers[key]!;
-  }
-
-  @override
-  void dispose() {
-    // Dispose of all controllers
-    _controllers.forEach((_, controller) => controller.dispose());
-    super.dispose();
   }
 
   DateTime now = DateTime.now();
@@ -76,7 +72,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
       'name': 'Nasdaq 100 E-Mini',
       'symbol': 'NQ',
       'tickSize': 0.25,
-      'tickValue': 5,
+      'tickValue': 5.0,
     },
     {
       'name': 'Nasdaq 100 Micro E-Mini',
@@ -87,20 +83,20 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     {
       'name': 'Dow Jones E-Mini',
       'symbol': 'YM',
-      'tickSize': 1,
-      'tickValue': 5,
+      'tickSize': 1.0,
+      'tickValue': 5.0,
     },
     {
       'name': 'Dow Jones Micro E-Mini',
       'symbol': 'MYM',
-      'tickSize': 1,
+      'tickSize': 1.0,
       'tickValue': 0.5,
     },
     {
       'name': 'Russell 2000 E-Mini',
       'symbol': 'RTY',
       'tickSize': 0.1,
-      'tickValue': 5,
+      'tickValue': 5.0,
     },
     {
       'name': 'Russell 2000 Micro E-Mini',
@@ -143,6 +139,52 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     'notes': '',
   };
 
+  @override
+  void initState() {
+    super.initState();
+    initTradeData();
+    initFutureContractFromPref();
+  }
+
+  void initTradeData() {
+    String profileId = context.read<SelectProfileStore>().state;
+    List<Map<String, dynamic>> rawProfiles = context.read<ProfileStore>().state;
+
+    String getProfileType = context
+        .read<SelectProfileStore>()
+        .getProfileType(profileId, rawProfiles);
+    setState(() {
+      profileType = getProfileType;
+    });
+  }
+
+  void initFutureContractFromPref() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String futuresContractsString =
+        prefs.getString('futuresContracts') ?? '';
+    if (futuresContractsString.isNotEmpty) {
+      //push futures contracts to list array
+      setState(() {
+        futuresContracts = [
+          ...futuresContracts,
+          ...jsonDecode(futuresContractsString)
+        ];
+        // set default symbol
+      });
+    }
+
+    setState(() {
+      trade['symbol'] = futuresContracts[0]['symbol'];
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose of all controllers
+    _controllers.forEach((_, controller) => controller.dispose());
+    super.dispose();
+  }
+
   void onChangeStrategies(List<String> strategies) {
     setState(() {
       trade['strategies'] = strategies;
@@ -162,9 +204,39 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
         trade['lotSize'] != null;
   }
 
+  String wordingForType(String type) {
+    switch (type.toUpperCase()) {
+      case 'FUTURES':
+        return 'Contracts';
+      case 'STOCK':
+        return 'Shares';
+      case 'FOREX':
+        return 'Lots';
+      case 'OPTION':
+        return 'Contracts';
+      default:
+        return 'Lot Size';
+    }
+  }
+
   void saveTrade() {
     //add id to trade
     trade['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+    trade['grossProfit'] = calculateProfit(
+        tradeSide: trade['tradeSide'],
+        type: profileType.toUpperCase(),
+        trickSize: profileType.toUpperCase() == "FUTURES"
+            ? futuresContracts.firstWhere(
+                (element) => element['symbol'] == trade['symbol'])['tickSize']
+            : 0,
+        trickValue: profileType.toUpperCase() == "FUTURES"
+            ? futuresContracts.firstWhere(
+                (element) => element['symbol'] == trade['symbol'])['tickValue']
+            : 0,
+        entryPrice: trade['entryPrice'] ?? 0,
+        exitPrice: trade['exitPrice'] ?? 0,
+        quantity: trade['lotSize'] ?? 0);
+    trade['netProfit'] = trade['grossProfit'] - (trade['feeCommission'] ?? 0);
     // convert jsonEncode
     final String tradeString = jsonEncode(trade);
     // get profile id
@@ -175,6 +247,15 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
 
     // close modal
     Navigator.pop(context);
+  }
+
+  String nameFutureContract(String symbol) {
+    if (symbol.isEmpty) {
+      return 'Select Futures';
+    }
+    final Map<String, dynamic> futureContract =
+        futuresContracts.firstWhere((element) => element['symbol'] == symbol);
+    return futureContract['name'] + ' (' + symbol + ')';
   }
 
   @override
@@ -212,28 +293,31 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             const Text('Symbol'),
             const SizedBox(height: 5),
             //input symbol with label
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xff2B2B2F),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextField(
-                  controller: symbolController,
-                  decoration: const InputDecoration(
-                    hintText: 'AAPL',
-                    labelStyle: TextStyle(color: Colors.white),
-                    border: InputBorder.none,
+            if (profileType == 'futures')
+              futureSelection(context)
+            else
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xff2B2B2F),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TextField(
+                    controller: symbolController,
+                    decoration: const InputDecoration(
+                      hintText: 'AAPL',
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: InputBorder.none,
+                    ),
+                    onChanged: (value) => {
+                      setState(() {
+                        trade['symbol'] = value;
+                      })
+                    },
                   ),
-                  onChanged: (value) => {
-                    setState(() {
-                      trade['symbol'] = value;
-                    })
-                  },
                 ),
               ),
-            ),
             const SizedBox(height: 20),
             const Text('Entry Date & Time'),
             const SizedBox(height: 5),
@@ -397,7 +481,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Lot Size'),
+                      Text(wordingForType(profileType)),
                       const SizedBox(height: 5),
                       Container(
                         decoration: BoxDecoration(
@@ -479,28 +563,56 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Gross Profit'),
-                      Text(calculateProfit(
-                              tradeSide: trade['tradeSide'],
-                              type: 'FUTURE',
-                              entryPrice: trade['entryPrice'] ?? 0,
-                              exitPrice: trade['exitPrice'] ?? 0,
-                              quantity: trade['lotSize'] ?? 0)
-                          .toString()),
+                      // Text(calculateProfit(
+                      //         tradeSide: trade['tradeSide'],
+                      //         type: profileType.toUpperCase(),
+                      //         trickSize: profileType.toUpperCase() == "FUTURES"
+                      //             ? futuresContracts.firstWhere((element) =>
+                      //                 element['symbol'] ==
+                      //                 trade['symbol'])['tickSize']
+                      //             : 0,
+                      //         trickValue: profileType.toUpperCase() == "FUTURES"
+                      //             ? futuresContracts.firstWhere((element) =>
+                      //                 element['symbol'] ==
+                      //                 trade['symbol'])['tickValue']
+                      //             : 0,
+                      //         entryPrice: trade['entryPrice'] ?? 0,
+                      //         exitPrice: trade['exitPrice'] ?? 0,
+                      //         quantity: trade['lotSize'] ?? 0)
+                      //     .toString()),
                       const SizedBox(height: 5),
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xff2B2B2F),
+                          color: const Color.fromARGB(255, 58, 56, 56),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
-                            onChanged: (value) => {
-                              if (value.isNotEmpty)
-                                setState(() {
-                                  trade['grossProfit'] = int.parse(value);
-                                })
-                            },
+                            readOnly: true,
+                            controller: TextEditingController(
+                              text: calculateProfit(
+                                      tradeSide: trade['tradeSide'],
+                                      type: profileType.toUpperCase(),
+                                      trickSize: profileType.toUpperCase() ==
+                                              "FUTURES"
+                                          ? futuresContracts.firstWhere(
+                                              (element) =>
+                                                  element['symbol'] ==
+                                                  trade['symbol'])['tickSize']
+                                          : 0,
+                                      trickValue: profileType.toUpperCase() ==
+                                              "FUTURES"
+                                          ? futuresContracts.firstWhere(
+                                              (element) =>
+                                                  element['symbol'] ==
+                                                  trade['symbol'])['tickValue']
+                                          : 0,
+                                      entryPrice: trade['entryPrice'] ?? 0,
+                                      exitPrice: trade['exitPrice'] ?? 0,
+                                      quantity: trade['lotSize'] ?? 0)
+                                  .toString(),
+                            ),
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
@@ -508,7 +620,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             ],
                             decoration: const InputDecoration(
                               hintText: '200',
-                              labelStyle: TextStyle(color: Colors.white),
+                              labelStyle: TextStyle(
+                                  color: Color.fromARGB(255, 103, 103, 103)),
                               border: InputBorder.none,
                             ),
                           ),
@@ -522,23 +635,40 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Fee & Commission'),
+                      const Text('Net Profit'),
                       const SizedBox(height: 5),
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xff2B2B2F),
+                          color: const Color.fromARGB(255, 58, 56, 56),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: TextField(
-                            controller: feeCommissionController,
-                            onChanged: (value) => {
-                              if (value.isNotEmpty)
-                                setState(() {
-                                  trade['feeCommission'] = double.parse(value);
-                                })
-                            },
+                            controller: TextEditingController(
+                              text: (double.parse(calculateProfit(
+                                      tradeSide: trade['tradeSide'],
+                                      type: profileType.toUpperCase(),
+                                      trickSize: profileType.toUpperCase() ==
+                                              "FUTURES"
+                                          ? futuresContracts.firstWhere(
+                                              (element) =>
+                                                  element['symbol'] ==
+                                                  trade['symbol'])['tickSize']
+                                          : 0,
+                                      trickValue: profileType.toUpperCase() ==
+                                              "FUTURES"
+                                          ? futuresContracts.firstWhere(
+                                              (element) =>
+                                                  element['symbol'] ==
+                                                  trade['symbol'])['tickValue']
+                                          : 0,
+                                      entryPrice: trade['entryPrice'] ?? 0,
+                                      exitPrice: trade['exitPrice'] ?? 0,
+                                      quantity: trade['lotSize'] ?? 0)
+                                  .toString()) - (trade['feeCommission'] ?? 0)).toString(),
+                            ),
+                            readOnly: true,
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
@@ -734,6 +864,95 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             ),
             const SizedBox(height: 40),
           ],
+        ),
+      ),
+    );
+  }
+
+  GestureDetector futureSelection(BuildContext context) {
+    return GestureDetector(
+      onTap: () => {
+        showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Container(
+                color: const Color(0xff222222),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Select Futures',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close, color: Colors.white),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    //list of challenges
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: futuresContracts.length,
+                        itemBuilder: (_, i) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 26, 26, 27),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            child: ListTile(
+                              title: Text(
+                                futuresContracts[i]['name'],
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  trade['symbol'] =
+                                      futuresContracts[i]['symbol'];
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xff2B2B2F),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+          child: Row(
+            //space between symbol and icon
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(nameFutureContract(trade['symbol']),
+                  style: const TextStyle(color: Colors.white, fontSize: 21)),
+              const SizedBox(width: 10),
+
+              //icon arrow down
+              const Icon(Icons.arrow_drop_down, color: Colors.white),
+            ],
+          ),
         ),
       ),
     );

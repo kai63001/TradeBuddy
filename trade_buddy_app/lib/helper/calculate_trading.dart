@@ -59,21 +59,25 @@ double calculateProfit({
   required String type,
   required double entryPrice,
   required double exitPrice,
-  required double quantity, // Represents lot size for FOREX, contract size for FUTURE and OPTION, shares for STOCK
-  double? trickSize = 1,
-  double? trickValue = 1,
+  required double
+      quantity, // Represents lot size for FOREX, contract size for FUTURE and OPTION, shares for STOCK
+  dynamic trickSize = 1,
+  dynamic trickValue = 1,
 }) {
   double priceDifference = exitPrice - entryPrice;
   if (tradeSide == 'SHORT') {
     priceDifference = entryPrice - exitPrice;
   }
 
+  double tickSize = double.parse(trickSize.toString());
+  double tickValue = double.parse(trickValue.toString());
+
   // Adjust the profit calculation based on the type of trade
   double grossProfit = 0;
   switch (type) {
     case 'FOREX':
       // For FOREX, the profit calculation uses the lot size directly (assuming each lot represents 100,000 units)
-      grossProfit = priceDifference * quantity;
+      grossProfit = priceDifference * quantity * 100;
       break;
     case 'STOCK':
       // Stocks use the number of shares directly
@@ -82,19 +86,16 @@ double calculateProfit({
     case 'OPTION':
       grossProfit = priceDifference * quantity * 100;
       break;
-    case 'FUTURE':
-      // For OPTIONS and FUTURES, the profit calculation uses the contract size directly
-      if (trickSize == null || trickValue == null) {
-        throw Exception('Contract size and value must be provided for FUTURE and OPTION trades');
-      } 
-      grossProfit = (priceDifference / trickSize) * trickValue * quantity;
+    case 'FUTURES':
+      grossProfit = (priceDifference / tickSize) * tickValue * quantity;
       break;
     default:
-      throw Exception('Trade type not supported');
+      grossProfit = priceDifference * quantity;
+      break;
   }
 
   // Assuming no other costs, net profit is equal to gross profit in this simplified example
-  double netProfit = grossProfit;
+  double netProfit = double.parse(grossProfit.toStringAsFixed(2));
 
   return netProfit;
 }

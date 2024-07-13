@@ -17,6 +17,7 @@ class _TradeJurnalPageState extends State<TradeJurnalPage> {
   DateTime _selectedDay = DateTime.now();
   List<Map<String, dynamic>> trades = [];
   DateFormat formattedDate = DateFormat('yyyy-MM-dd');
+  String oldProfileForCheck = ''; //!important for check profile change FIX BUG
 
   void updateSelection(DateTime date) {
     setState(() {
@@ -43,7 +44,13 @@ class _TradeJurnalPageState extends State<TradeJurnalPage> {
                   .format(DateTime.parse(element['date'].toString())) ==
               formattedDate.format(_selectedDay))
           .toList();
+      oldProfileForCheck = profileId;
     });
+  }
+
+  Widget checkIfOldProfileNotUpdate() {
+    getTradesBySelectedDate();
+    return const SizedBox();
   }
 
   @override
@@ -68,6 +75,8 @@ class _TradeJurnalPageState extends State<TradeJurnalPage> {
           //divider
           const SizedBox(height: 15),
           //list of trades
+          if (context.watch<SelectProfileStore>().state != oldProfileForCheck)
+            checkIfOldProfileNotUpdate(),
           ListJurnalTrade(trades: trades)
         ],
       ),

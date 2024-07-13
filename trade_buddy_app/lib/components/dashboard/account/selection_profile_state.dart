@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trade_buddy_app/page/create_profile/create_profile_page.dart';
 import 'package:trade_buddy_app/store/profile_store.dart';
 import 'package:trade_buddy_app/store/select_profile_store.dart';
+import 'package:trade_buddy_app/store/trade_store.dart';
 
 class SelectionProfileState extends StatefulWidget {
   const SelectionProfileState({
@@ -26,6 +27,21 @@ class _SelectionProfileStateState extends State<SelectionProfileState> {
     setState(() {
       profiles = context.read<ProfileStore>().state;
     });
+  }
+
+  Future<void> importantInitTradeData() async {
+    await context.read<ProfileStore>().initProfileList();
+    await context.read<SelectProfileStore>().initSelectedProfile();
+    final profileStore = context.read<ProfileStore>();
+    if (profileStore.state.isNotEmpty) {
+      setState(() {
+        profiles = profileStore.state;
+      });
+      final profileId = await context.read<SelectProfileStore>().state;
+      await context.read<TradeStore>().initTradeList(profileId);
+    }
+
+    Navigator.pop(context);
   }
 
   @override
@@ -102,13 +118,11 @@ class _SelectionProfileStateState extends State<SelectionProfileState> {
                         : null,
                     onTap: () {
                       //navigate to challenge
-                      debugPrint('Selected Profile: ${profiles[i]['id']}');
-
                       context
                           .read<SelectProfileStore>()
                           .selectProfile(profiles[i]['id'].toString());
 
-                      Navigator.pop(context);
+                      importantInitTradeData();
                     },
                   ),
                 );

@@ -18,6 +18,7 @@ Color calculateColorCalendar(
 Color calculateRedDayOrGreenColor(String date,
     Map<String, List<Map<String, dynamic>>> state, String profileId) {
   String dateFormat = formattedDate.format(DateTime.parse(date));
+  
   //no status have only tradeSide long and short and entry and exit price
   List<Map<String, dynamic>> trades = state[profileId] ?? [];
 

@@ -31,7 +31,10 @@ void showAddTradeManually(BuildContext context) {
 class AddTrandingManuallyPage extends StatefulWidget {
   const AddTrandingManuallyPage({
     super.key,
+    this.tradeId = '',
   });
+
+  final String tradeId;
 
   @override
   State<AddTrandingManuallyPage> createState() =>
@@ -156,6 +159,29 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     setState(() {
       profileType = getProfileType;
     });
+
+    //check if trade id is not empty
+    if (widget.tradeId.isNotEmpty) {
+      //get trade by id
+      final Map<String, dynamic> tradeData =
+          context.read<TradeStore>().getTradeById(widget.tradeId, profileId);
+      //set trade data to state
+      //convert trade.startigies and trade.feelingsMistakes to list String
+      List<String> strategies = [];
+      List<String> feelingsMistakes = [];
+      if (tradeData['strategies'] != null) {
+        strategies = tradeData['strategies'].cast<String>();
+      }
+      if (tradeData['feelingsMistakes'] != null) {
+        feelingsMistakes = tradeData['feelingsMistakes'].cast<String>();
+      }
+
+      setState(() {
+        trade = tradeData;
+        trade['strategies'] = strategies;
+        trade['feelingsMistakes'] = feelingsMistakes;
+      });
+    }
   }
 
   void initFutureContractFromPref() async {
@@ -172,10 +198,11 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
         // set default symbol
       });
     }
-
-    setState(() {
-      trade['symbol'] = futuresContracts[0]['symbol'];
-    });
+    if (trade['symbol'].isEmpty) {
+      setState(() {
+        trade['symbol'] = futuresContracts[0]['symbol'];
+      });
+    }
   }
 
   @override
@@ -221,7 +248,11 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
 
   void saveTrade() {
     //add id to trade
-    trade['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+    if (widget.tradeId.isNotEmpty) {
+      trade['id'] = widget.tradeId;
+    } else {
+      trade['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+    }
     trade['grossProfit'] = calculateProfit(
         tradeSide: trade['tradeSide'],
         type: profileType.toUpperCase(),
@@ -243,7 +274,14 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     debugPrint(tradeString);
     // get profile id
     final String profileId = context.read<SelectProfileStore>().state;
-
+    //* Update trade if tradeId is not empty
+    if (widget.tradeId.isNotEmpty) {
+      //update trade
+      context.read<TradeStore>().updateTradeById(tradeString, profileId);
+      // close modal
+      Navigator.pop(context);
+      return;
+    }
     // save trade to local storage
     context.read<TradeStore>().addTrade(tradeString, profileId);
 
@@ -280,8 +318,11 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Add a New Trade Entry',
-                    style: TextStyle(
+                Text(
+                    widget.tradeId.isNotEmpty
+                        ? 'Edit Trade'
+                        : 'Add a New Trade Entry',
+                    style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                         fontSize: 16)),
@@ -971,7 +1012,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(nameFutureContract(trade['symbol']),
-                  style: const TextStyle(color: Colors.white, fontSize: 21)),
+                  style: const TextStyle(color: Colors.white, fontSize: 15)),
               const SizedBox(width: 10),
 
               //icon arrow down

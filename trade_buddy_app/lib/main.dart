@@ -79,11 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    checkHaveAnyProfileOrNot();
+    importantInitTradeData();
   }
 
 
-  Future<void> checkHaveAnyProfileOrNot() async {
+  Future<void> importantInitTradeData() async {
     await context.read<ProfileStore>().initProfileList();
     await context.read<SelectProfileStore>().initSelectedProfile();
     final profileStore = context.read<ProfileStore>();

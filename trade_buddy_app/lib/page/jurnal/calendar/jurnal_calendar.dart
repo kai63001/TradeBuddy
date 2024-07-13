@@ -113,8 +113,8 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
               decoration: BoxDecoration(
                 color: calculateRedDayOrGreenColor(
                     day.toString(),
-                    context.read<TradeStore>().state,
-                    context.read<SelectProfileStore>().state),
+                    context.watch<TradeStore>().state,
+                    context.watch<SelectProfileStore>().state),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Column(

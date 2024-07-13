@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trade_buddy_app/components/add_trade/add_trade_manually.dart';
 import 'package:trade_buddy_app/helper/calculate_trading.dart';
 import 'package:trade_buddy_app/helper/trading_history.dart';
 
@@ -41,6 +42,20 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
                     tappedIndex = -1; // Stop the animation after a delay
                   });
                 });
+                //* go to Edit Trade Page
+                showModalBottomSheet(
+                  backgroundColor: const Color(0xff222222),
+                  context: context,
+                  useSafeArea: true,
+                  barrierColor: Colors.transparent,
+                  enableDrag: false,
+                  isScrollControlled: true,
+                  builder: (BuildContext context) {
+                    return AddTrandingManuallyPage(
+                      tradeId: widget.trades[index]["id"],
+                    );
+                  },
+                );
               },
               onTapCancel: () {
                 setState(() {
@@ -60,7 +75,8 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
                       const SizedBox(width: 5),
                       SizedBox(
                           width: 60,
-                          child: tradeType(widget.trades[index]['tradeSide'], 12)),
+                          child:
+                              tradeType(widget.trades[index]['tradeSide'], 12)),
                     ],
                   ),
                   subtitle: Row(

@@ -98,3 +98,26 @@ double calculateProfit({
 
   return netProfit;
 }
+
+/// Function to calculate the profit per day
+String calculateProfitPerDay(String date,
+    Map<String, List<Map<String, dynamic>>> state, String profileId) {
+  String dateFormat = formattedDate.format(DateTime.parse(date));
+  List<Map<String, dynamic>> trades = state[profileId] ?? [];
+  double profit = 0;
+  for (int i = 0; i < trades.length; i++) {
+    if (formattedDate.format(DateTime.parse(trades[i]['date'])) == dateFormat) {
+      if (trades[i]['netProfit'] != null) {
+        profit += trades[i]['netProfit'];
+      }
+    }
+  }
+  String formattedProfit = '';
+  if (profit >= 1000) {
+    double formattedValue = profit / 1000;
+    formattedProfit = '\$${formattedValue.toStringAsFixed(1)}k';
+  } else {
+    formattedProfit = '\$${profit.toStringAsFixed(0)}';
+  }
+  return formattedProfit;
+}

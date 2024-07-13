@@ -59,7 +59,10 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
           margin: const EdgeInsets.all(4.0),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: calculateRedDayOrGreenColor(day.toString(), context.read<TradeStore>().state, context.watch<SelectProfileStore>().state),
+            color: calculateRedDayOrGreenColor(
+                day.toString(),
+                context.watch<TradeStore>().state,
+                context.watch<SelectProfileStore>().state),
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Column(
@@ -70,9 +73,12 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
                 day.day.toString(),
                 style: const TextStyle(color: Colors.white),
               ),
-              const Text(
-                '\$2',
-                style: TextStyle(color: Colors.white,fontSize: 12),
+              Text(
+                calculateProfitPerDay(
+                    day.toString(),
+                    context.watch<TradeStore>().state,
+                    context.watch<SelectProfileStore>().state),
+                style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],
           ),
@@ -90,6 +96,13 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
                 day.day.toString(),
                 style: const TextStyle(color: Colors.white),
               ),
+              Text(
+                calculateProfitPerDay(
+                    day.toString(),
+                    context.watch<TradeStore>().state,
+                    context.watch<SelectProfileStore>().state),
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
             ],
           ),
         ),
@@ -98,7 +111,10 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
               margin: const EdgeInsets.all(4.0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-              color: calculateRedDayOrGreenColor(day.toString(), context.read<TradeStore>().state, context.read<SelectProfileStore>().state),
+                color: calculateRedDayOrGreenColor(
+                    day.toString(),
+                    context.read<TradeStore>().state,
+                    context.read<SelectProfileStore>().state),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Column(
@@ -106,6 +122,13 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
                   Text(
                     day.day.toString(),
                     style: const TextStyle(color: Colors.white),
+                  ),
+                  Text(
+                    calculateProfitPerDay(
+                        day.toString(),
+                        context.watch<TradeStore>().state,
+                        context.watch<SelectProfileStore>().state),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ],
               ));

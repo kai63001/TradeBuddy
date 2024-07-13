@@ -239,6 +239,8 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     trade['netProfit'] = trade['grossProfit'] - (trade['feeCommission'] ?? 0);
     // convert jsonEncode
     final String tradeString = jsonEncode(trade);
+
+    debugPrint(tradeString);
     // get profile id
     final String profileId = context.read<SelectProfileStore>().state;
 

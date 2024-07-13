@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:trade_buddy_app/components/add_trade/add_trade_manually.dart';
@@ -63,7 +65,8 @@ class CustomNavBar extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 child: Row(
                   //sspace between
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,7 +91,8 @@ class CustomNavBar extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 26, 26, 27), // background color
+                    backgroundColor: const Color.fromARGB(
+                        255, 26, 26, 27), // background color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // radius value
                     ),
@@ -115,7 +119,8 @@ class CustomNavBar extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 26, 26, 27), // background color
+                    backgroundColor: const Color.fromARGB(
+                        255, 26, 26, 27), // background color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // radius value
                     ),
@@ -141,7 +146,8 @@ class CustomNavBar extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 26, 26, 27), // background color
+                    backgroundColor: const Color.fromARGB(
+                        255, 26, 26, 27), // background color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // radius value
                     ),
@@ -177,8 +183,8 @@ class CustomNavBar extends StatelessWidget {
         boxShadow: navBarDecoration.boxShadow,
         color: const Color(0xff222222),
       ),
-      filter: navBarConfig.selectedItem.filter,
-      opacity: navBarConfig.selectedItem.opacity,
+      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+      opacity: 0.7,
       height: navBarConfig.navBarHeight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

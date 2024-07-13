@@ -34,9 +34,15 @@ class _TradeJurnalPageState extends State<TradeJurnalPage> {
   Future<void> getTradesBySelectedDate() async {
     String profileId = context.read<SelectProfileStore>().state;
     //get trades by selected date
-    List<Map<String, dynamic>> getTrade = await context.read<TradeStore>().getTradeList(profileId);
-    setState(()  {
-      trades = getTrade.where((element) => formattedDate.format(DateTime.parse(element['date'].toString())) == formattedDate.format(_selectedDay)).toList();
+    List<Map<String, dynamic>> getTrade =
+        await context.read<TradeStore>().getTradeList(profileId);
+    setState(() {
+      trades = getTrade
+          .where((element) =>
+              formattedDate
+                  .format(DateTime.parse(element['date'].toString())) ==
+              formattedDate.format(_selectedDay))
+          .toList();
     });
   }
 
@@ -60,10 +66,7 @@ class _TradeJurnalPageState extends State<TradeJurnalPage> {
             ),
           ),
           //divider
-          const Divider(
-            color: Color.fromARGB(255, 89, 87, 87),
-            thickness: 2,
-          ),
+          const SizedBox(height: 15),
           //list of trades
           ListJurnalTrade(trades: trades)
         ],

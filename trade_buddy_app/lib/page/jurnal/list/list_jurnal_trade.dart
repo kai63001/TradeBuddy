@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trade_buddy_app/helper/calculate_trading.dart';
 
 class ListJurnalTrade extends StatefulWidget {
   final List<Map<String, dynamic>> trades;
@@ -17,8 +18,12 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: widget.trades.length,
       itemBuilder: (context, index) {
+        bool isWin = calculateTradeWinOrLoss(
+            widget.trades[index]['tradeSide'].toString(),
+            widget.trades[index]['entryPrice'],
+            widget.trades[index]['exitPrice']);
         return Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: AnimatedScale(
             scale: tappedIndex == index ? 0.95 : 1, // Scale down when tapped
             duration: const Duration(milliseconds: 200),
@@ -49,8 +54,32 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
                 ),
                 child: ListTile(
                   title: Text(widget.trades[index]['symbol']),
-                  subtitle: Text(widget.trades[index]['entryPrice'].toString()),
-                  trailing: Text(widget.trades[index]['exitPrice'].toString()),
+                  subtitle: Row(
+                    children: [
+                      Text(widget.trades[index]['entryPrice'].toString(),
+                          style: const TextStyle(color: Colors.grey)),
+                      const SizedBox(width: 5),
+                      const Icon(Icons.arrow_forward,
+                          color: Colors.grey, size: 15),
+                      const SizedBox(width: 5),
+                      Text(widget.trades[index]['exitPrice'].toString(),
+                          style: const TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                  trailing: Text(
+                    isWin
+                        ? returnStringToMoneyFormat(
+                            (widget.trades[index]['netProfit']?.abs() ?? 0)
+                                .toString())
+                        : '-${returnStringToMoneyFormat((widget.trades[index]['netProfit']?.abs() ?? 0).toString())}',
+                    // '\$${widget.trades[index]['netProfit'].abs()}',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: isWin
+                            ? const Color(0xff00D6BF)
+                            : const Color(0xffFF0E37)),
+                  ),
                 ),
               ),
             ),

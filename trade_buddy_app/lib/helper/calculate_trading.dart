@@ -121,3 +121,44 @@ String calculateProfitPerDay(String date,
   }
   return formattedProfit;
 }
+
+bool calculateTradeWinOrLoss(
+    String tradeSide, double entryPrice, double exitPrice) {
+  if (tradeSide == 'LONG') {
+    if (entryPrice < exitPrice) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    if (entryPrice > exitPrice) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+//1000.00 -> 1,000.00
+String returnStringToMoneyFormat(String value) {
+  // Split the value into integer and decimal parts
+  List<String> parts = value.split('.');
+  String integerPart = parts[0];
+  String decimalPart = parts.length > 1 ? '.${parts[1]}' : '';
+  
+  // Format the integer part with commas
+  String formattedValue = '';
+  int count = 0;
+  for (int i = integerPart.length - 1; i >= 0; i--) {
+    count++;
+    formattedValue = integerPart[i] + formattedValue;
+    if (count % 3 == 0 && i != 0) {  // Ensure comma is not added at the start
+      formattedValue = ',$formattedValue';
+    }
+  }
+  
+  // Combine the formatted integer part with the decimal part
+  return '\$$formattedValue$decimalPart';
+}
+
+

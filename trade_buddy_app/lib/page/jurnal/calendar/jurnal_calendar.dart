@@ -41,6 +41,10 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
 
   @override
   Widget build(BuildContext context) {
+    String profitPerDay = calculateProfitPerDay(
+        _selectedDay.toString(),
+        context.watch<TradeStore>().state,
+        context.watch<SelectProfileStore>().state);
     return TableCalendar(
       firstDay: kFirstDay,
       lastDay: kLastDay,
@@ -74,10 +78,7 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
                 style: const TextStyle(color: Colors.white),
               ),
               Text(
-                calculateProfitPerDay(
-                    day.toString(),
-                    context.watch<TradeStore>().state,
-                    context.watch<SelectProfileStore>().state),
+                profitPerDay,
                 style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],
@@ -97,10 +98,7 @@ class _JurnalCalendarState extends State<JurnalCalendar> {
                 style: const TextStyle(color: Colors.white),
               ),
               Text(
-                calculateProfitPerDay(
-                    day.toString(),
-                    context.watch<TradeStore>().state,
-                    context.watch<SelectProfileStore>().state),
+                profitPerDay,
                 style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],

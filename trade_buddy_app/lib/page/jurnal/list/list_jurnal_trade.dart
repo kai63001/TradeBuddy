@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trade_buddy_app/helper/calculate_trading.dart';
+import 'package:trade_buddy_app/helper/trading_history.dart';
 
 class ListJurnalTrade extends StatefulWidget {
   final List<Map<String, dynamic>> trades;
@@ -53,7 +54,15 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: ListTile(
-                  title: Text(widget.trades[index]['symbol']),
+                  title: Row(
+                    children: [
+                      Text(widget.trades[index]['symbol']),
+                      const SizedBox(width: 5),
+                      SizedBox(
+                          width: 60,
+                          child: tradeType(widget.trades[index]['tradeSide'], 12)),
+                    ],
+                  ),
                   subtitle: Row(
                     children: [
                       Text(widget.trades[index]['entryPrice'].toString(),

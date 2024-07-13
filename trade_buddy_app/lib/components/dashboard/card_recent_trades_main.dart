@@ -12,9 +12,7 @@ class _CardRecentTradesMainState extends State<CardRecentTradesMain> {
   @override
   Widget build(BuildContext context) {
     const sizeboxTable = TableRow(children: [
-      SizedBox(
-        height: 10,
-      ),
+      
       SizedBox(
         height: 10,
       ),
@@ -52,21 +50,21 @@ class _CardRecentTradesMainState extends State<CardRecentTradesMain> {
               child: Table(
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                 columnWidths: const <int, TableColumnWidth>{
-                  0: FixedColumnWidth(60),
-                  1: FixedColumnWidth(70),
+                  // 0: FixedColumnWidth(60),
+                  0: FixedColumnWidth(70),
+                  1: FlexColumnWidth(),
                   2: FlexColumnWidth(),
-                  3: FlexColumnWidth(),
-                  4: FixedColumnWidth(65),
-                  5: FlexColumnWidth(),
+                  3: FixedColumnWidth(65),
+                  4: FlexColumnWidth(),
                 },
                 children: <TableRow>[
                   const TableRow(
                     children: <Widget>[
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text('STATUS',
-                            style: TextStyle(fontWeight: FontWeight.w900)),
-                      ),
+                      // Align(
+                      //   alignment: Alignment.center,
+                      //   child: Text('STATUS',
+                      //       style: TextStyle(fontWeight: FontWeight.w900)),
+                      // ),
                       Align(
                         alignment: Alignment.center,
                         child: Text('SYMBOL',
@@ -97,7 +95,7 @@ class _CardRecentTradesMainState extends State<CardRecentTradesMain> {
                   sizeboxTable,
                   TableRow(
                     children: <Widget>[
-                      statusTrade('WIN'),
+                      // statusTrade('WIN'),
                       const Align(
                         alignment: Alignment.center,
                         child: Text(
@@ -141,7 +139,7 @@ class _CardRecentTradesMainState extends State<CardRecentTradesMain> {
                   sizeboxTable,
                   TableRow(
                     children: <Widget>[
-                      statusTrade('LOSE'),
+                      // statusTrade('LOSE'),
                       const Align(
                         alignment: Alignment.center,
                         child: Text(
@@ -185,7 +183,7 @@ class _CardRecentTradesMainState extends State<CardRecentTradesMain> {
                   sizeboxTable,
                   TableRow(
                     children: <Widget>[
-                      statusTrade('WIN'),
+                      // statusTrade('WIN'),
                       const Align(
                         alignment: Alignment.center,
                         child: Text(

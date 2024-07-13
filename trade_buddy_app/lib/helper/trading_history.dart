@@ -23,7 +23,7 @@ Padding statusTrade(String status) {
   );
 }
 
-Padding tradeType(String type) {
+Padding tradeType(String type, [int fontSize = 14]) {
   return Padding(
     padding: const EdgeInsets.only(right: 8.0),
     child: Container(
@@ -38,6 +38,7 @@ Padding tradeType(String type) {
         alignment: Alignment.center,
         child: Text(type,
             style: TextStyle(
+                fontSize: fontSize.toDouble(),
                 color: type.toUpperCase() == 'LONG'
                     ? const Color(0xff00D6BF)
                     : const Color(0xffFF0E37),

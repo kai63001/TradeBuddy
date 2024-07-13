@@ -20,37 +20,23 @@ Color calculateRedDayOrGreenColor(String date,
   String dateFormat = formattedDate.format(DateTime.parse(date));
   //no status have only tradeSide long and short and entry and exit price
   List<Map<String, dynamic>> trades = state[profileId] ?? [];
-  // and 1 day have multiple trade if have loosing trade more than winning trade then red
-  // if have winning trade more than loosing trade then green
-  int red = 0;
-  int green = 0;
+
+  double profit = 0;
   for (int i = 0; i < trades.length; i++) {
     if (formattedDate.format(DateTime.parse(trades[i]['date'])) == dateFormat) {
-      if (trades[i]['tradeSide'] == 'LONG') {
-        if (trades[i]['entryPrice'] > trades[i]['exitPrice']) {
-          red++;
-        } else {
-          green++;
-        }
-      } else {
-        if (trades[i]['entryPrice'] < trades[i]['exitPrice']) {
-          red++;
-        } else {
-          green++;
-        }
+      if (trades[i]['netProfit'] != null) {
+        profit += trades[i]['netProfit'];
       }
     }
   }
 
-  if (red > green) {
-    return const Color(0xffFF0E37);
-  } else if (green > red) {
+  if (profit > 0) {
     return const Color(0xff00D6BF);
-  } else if (green == red && (green != 0 || red != 0)) {
-    return const Color.fromARGB(255, 31, 31, 31);
+  } else if (profit < 0) {
+    return const Color(0xffFF0E37);
+  } else {
+    return const Color(0xff2B2B2F);
   }
-
-  return const Color(0xff2B2B2F);
 }
 
 double calculateProfit({
@@ -115,9 +101,9 @@ String calculateProfitPerDay(String date,
   String formattedProfit = '';
   if (profit >= 1000) {
     double formattedValue = profit / 1000;
-    formattedProfit = '\$${formattedValue.toStringAsFixed(1)}k';
+    formattedProfit = '\$${formattedValue.abs().toStringAsFixed(1)}k';
   } else {
-    formattedProfit = '\$${profit.toStringAsFixed(0)}';
+    formattedProfit = '\$${profit.abs().toStringAsFixed(0)}';
   }
   return formattedProfit;
 }

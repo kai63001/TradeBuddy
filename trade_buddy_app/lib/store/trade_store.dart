@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TradeStore extends Cubit<Map<String, List<Map<String, dynamic>>>> {
+  DateFormat formattedDate = DateFormat('yyyy-MM-dd');
   TradeStore() : super({});
 
   Future<void> addTrade(String tradeData, String profileId) async {
@@ -49,6 +51,16 @@ class TradeStore extends Cubit<Map<String, List<Map<String, dynamic>>>> {
     final rawTrades = prefs.getStringList('tradeList_$profileId') ?? [];
     final trades = rawTrades.map((e) => jsonDecode(e)).toList();
     return trades.cast<Map<String, dynamic>>().toList();
+  }
+
+  List<Map<String, dynamic>> getTradeListByDate(
+      String profileId, DateTime date) {
+    final trades = state[profileId] ?? [];
+    return trades
+        .where((element) =>
+            formattedDate.format(DateTime.parse(element['date'].toString())) ==
+            formattedDate.format(date))
+        .toList();
   }
 
   Future<void> deleteTrade(String id, String profileId) async {

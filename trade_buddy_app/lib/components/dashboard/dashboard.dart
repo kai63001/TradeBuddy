@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:trade_buddy_app/components/dashboard/account/selection_profile_state.dart';
 import 'package:trade_buddy_app/components/dashboard/card_overview_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_recent_trades_main.dart';
@@ -17,6 +18,8 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

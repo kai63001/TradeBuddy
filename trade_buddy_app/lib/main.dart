@@ -74,6 +74,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Map<String, dynamic>> profiles = [];
   bool loading = true;
+  String profileIdGlobal = '';
 
   //init
   @override
@@ -92,6 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
         profiles = profileStore.state;
       });
       final profileId = await context.read<SelectProfileStore>().state;
+      setState(() {
+        profileIdGlobal = profileId;
+      });
       await context.read<TradeStore>().initTradeList(profileId);
     }
     setState(() {

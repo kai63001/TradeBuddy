@@ -18,7 +18,7 @@ Color calculateColorCalendar(
 Color calculateRedDayOrGreenColor(String date,
     Map<String, List<Map<String, dynamic>>> state, String profileId) {
   String dateFormat = formattedDate.format(DateTime.parse(date));
-  
+
   //no status have only tradeSide long and short and entry and exit price
   List<Map<String, dynamic>> trades = state[profileId] ?? [];
 
@@ -132,20 +132,40 @@ String returnStringToMoneyFormat(String value) {
   List<String> parts = value.split('.');
   String integerPart = parts[0];
   String decimalPart = parts.length > 1 ? '.${parts[1]}' : '';
-  
+
   // Format the integer part with commas
   String formattedValue = '';
   int count = 0;
   for (int i = integerPart.length - 1; i >= 0; i--) {
     count++;
     formattedValue = integerPart[i] + formattedValue;
-    if (count % 3 == 0 && i != 0) {  // Ensure comma is not added at the start
+    if (count % 3 == 0 && i != 0) {
+      // Ensure comma is not added at the start
       formattedValue = ',$formattedValue';
     }
   }
-  
+
   // Combine the formatted integer part with the decimal part
   return '\$$formattedValue$decimalPart';
 }
 
+String calculateWinRateWithTrades(List<Map<String, dynamic>> trades) {
+  if (trades.isEmpty) {
+    return '0%';
+  }
+  int winCount = 0;
+  int lossCount = 0;
+  for (int i = 0; i < trades.length; i++) {
+    if (trades[i]['netProfit'] == null) {
+      continue;
+    }
 
+    if (double.parse(trades[i]['netProfit'].toString()) > 0) {
+      winCount++;
+    } else {
+      lossCount++;
+    }
+  }
+  double winRate = winCount / (winCount + lossCount);
+  return '${(winRate * 100).toStringAsFixed(2)}%';
+}

@@ -1,20 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trade_buddy_app/helper/calculate_trading.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
+import 'package:trade_buddy_app/store/trade_store.dart';
 
-class CardOverview extends StatelessWidget {
+class CardOverview extends StatefulWidget {
   const CardOverview({
     super.key,
   });
 
   @override
+  State<CardOverview> createState() => _CardOverviewState();
+}
+
+class _CardOverviewState extends State<CardOverview> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Text winrateCal() {
+    String profileId = context.read<SelectProfileStore>().state;
+    List<Map<String, dynamic>> trades =
+        context.watch<TradeStore>().getTradeListByProfileId(profileId);
+
+    String winRate = calculateWinRateWithTrades(trades);
+
+    return Text(
+      winRate,
+      style: const TextStyle(
+        color: Color(0xff00D6BF),
+        fontWeight: FontWeight.w900,
+        fontSize: 25,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(8.0),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-         Padding(
+          const Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0),
             child: Text('Overview',
                 style: TextStyle(
@@ -27,34 +58,26 @@ class CardOverview extends StatelessWidget {
               Expanded(
                 child: Card(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('WIN RATE',
+                        const Text('WIN RATE',
                             style: TextStyle(
                                 color: Color(0xff666666),
                                 fontWeight: FontWeight.w900,
                                 fontSize: 15)),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            '75%',
-                            style: TextStyle(
-                              color: Color(0xff00D6BF),
-                              fontWeight: FontWeight.w900,
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
+                            alignment: Alignment.centerRight,
+                            child: winrateCal()),
                       ],
                     ),
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: Card(
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
@@ -86,7 +109,7 @@ class CardOverview extends StatelessWidget {
               ),
             ],
           ),
-          Row(
+          const Row(
             children: [
               Expanded(
                 child: Card(

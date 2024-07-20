@@ -53,6 +53,10 @@ class TradeStore extends Cubit<Map<String, List<Map<String, dynamic>>>> {
     return trades.cast<Map<String, dynamic>>().toList();
   }
 
+  List<Map<String, dynamic>> getTradeListByProfileId(String profileId) {
+    return state[profileId] ?? [];
+  }
+
   List<Map<String, dynamic>> getTradeListByDate(
       String profileId, DateTime date) {
     final trades = state[profileId] ?? [];

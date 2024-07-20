@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:trade_buddy_app/components/add_trade/add_trade_manually.dart';
 import 'package:trade_buddy_app/helper/calculate_trading.dart';
 import 'package:trade_buddy_app/helper/trading_history.dart';
@@ -12,6 +13,8 @@ class ListJurnalTrade extends StatefulWidget {
 }
 
 class _ListJurnalTradeState extends State<ListJurnalTrade> {
+  DateFormat formattedTime = DateFormat('HH:mm');
+
   int tappedIndex = -1;
   @override
   Widget build(BuildContext context) {
@@ -89,6 +92,15 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
                       const SizedBox(width: 5),
                       Text(widget.trades[index]['exitPrice'].toString(),
                           style: const TextStyle(color: Colors.grey)),
+                      const SizedBox(width: 5),
+                      // ICON DOT middle
+                      const Icon(Icons.circle, color: Colors.grey, size: 5),
+                      const SizedBox(width: 5),
+                      Text(
+                          formattedTime.format(
+                              DateTime.parse(widget.trades[index]['date'] ?? DateTime.now())),
+                          style: const TextStyle(color: Colors.grey)),
+
                     ],
                   ),
                   trailing: Text(

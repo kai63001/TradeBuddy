@@ -44,6 +44,8 @@ class _TradeJurnalPageState extends State<TradeJurnalPage> {
                   .format(DateTime.parse(element['date'].toString())) ==
               formattedDate.format(_selectedDay))
           .toList();
+          //reverse list
+      trades = trades.reversed.toList();
       oldProfileForCheck = profileId;
     });
   }

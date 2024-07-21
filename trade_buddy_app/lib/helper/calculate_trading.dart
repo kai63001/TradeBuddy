@@ -32,9 +32,34 @@ Color calculateRedDayOrGreenColor(String date,
   }
 
   if (profit > 0) {
-    return const Color(0xff00D6BF);
+    return Color.fromARGB(255, 19, 170, 155);
   } else if (profit < 0) {
     return const Color(0xffFF0E37);
+  } else {
+    return Color.fromARGB(255, 207, 207, 214);
+  }
+}
+
+Color calculateRedDayOrGreenColorBackground(String date,
+    Map<String, List<Map<String, dynamic>>> state, String profileId) {
+  String dateFormat = formattedDate.format(DateTime.parse(date));
+
+  //no status have only tradeSide long and short and entry and exit price
+  List<Map<String, dynamic>> trades = state[profileId] ?? [];
+
+  double profit = 0;
+  for (int i = 0; i < trades.length; i++) {
+    if (formattedDate.format(DateTime.parse(trades[i]['date'])) == dateFormat) {
+      if (trades[i]['netProfit'] != null) {
+        profit += trades[i]['netProfit'];
+      }
+    }
+  }
+
+  if (profit > 0) {
+    return const Color(0xffE6F7F5);
+  } else if (profit < 0) {
+    return const Color(0xffFDE8E8);
   } else {
     return const Color(0xff2B2B2F);
   }
@@ -86,9 +111,10 @@ double calculateProfit({
   return netProfit;
 }
 
-
-String calculateProfitPerDay(String date, Map<String, List<Map<String, dynamic>>> state, String profileId) {
-  DateFormat formattedDate = DateFormat('yyyy-MM-dd'); // Ensure your date format matches the one used in the trades
+String calculateProfitPerDay(String date,
+    Map<String, List<Map<String, dynamic>>> state, String profileId) {
+  DateFormat formattedDate = DateFormat(
+      'yyyy-MM-dd'); // Ensure your date format matches the one used in the trades
   String dateFormat = formattedDate.format(DateTime.parse(date));
   List<Map<String, dynamic>> trades = state[profileId] ?? [];
   double profit = 0;
@@ -102,20 +128,24 @@ String calculateProfitPerDay(String date, Map<String, List<Map<String, dynamic>>
 
 String formatProfit(double profit) {
   bool isNegative = profit < 0; // Check if the profit is negative
-  double absoluteProfit = profit.abs(); // Work with the absolute value for formatting
+  double absoluteProfit =
+      profit.abs(); // Work with the absolute value for formatting
 
   String formattedProfit;
   // Format and append 'M' for millions
   if (absoluteProfit >= 1000000) {
-    formattedProfit = "\$${(absoluteProfit / 1000000).toStringAsFixed(absoluteProfit % 1000000 == 0 ? 0 : 3)}M";
+    formattedProfit =
+        "\$${(absoluteProfit / 1000000).toStringAsFixed(absoluteProfit % 1000000 == 0 ? 0 : 3)}M";
   }
   // Format and append 'k' for thousands
   else if (absoluteProfit >= 1000) {
-    formattedProfit = "\$${(absoluteProfit / 1000).toStringAsFixed(absoluteProfit % 1000 == 0 ? 0 : 1)}k";
+    formattedProfit =
+        "\$${(absoluteProfit / 1000).toStringAsFixed(absoluteProfit % 1000 == 0 ? 0 : 1)}k";
   }
   // Return as is if less than a thousand
   else {
-    formattedProfit = "\$${absoluteProfit.toStringAsFixed(absoluteProfit % 1 == 0 ? 0 : 2)}";
+    formattedProfit =
+        "\$${absoluteProfit.toStringAsFixed(absoluteProfit % 1 == 0 ? 0 : 2)}";
   }
 
   // Prepend the negative sign if the profit was negative
@@ -255,5 +285,3 @@ String convertMoneyToK(String value) {
     return "\$$amount";
   }
 }
-
-

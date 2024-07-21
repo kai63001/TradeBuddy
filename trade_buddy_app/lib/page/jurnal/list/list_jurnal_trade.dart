@@ -6,7 +6,8 @@ import 'package:trade_buddy_app/helper/trading_history.dart';
 
 class ListJurnalTrade extends StatefulWidget {
   final List<Map<String, dynamic>> trades;
-  const ListJurnalTrade({super.key, required this.trades});
+  final Function? updateTradeList;
+  const ListJurnalTrade({super.key, required this.trades, this.updateTradeList});
 
   @override
   State<ListJurnalTrade> createState() => _ListJurnalTradeState();
@@ -16,6 +17,8 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
   DateFormat formattedTime = DateFormat('HH:mm');
 
   int tappedIndex = -1;
+
+  
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -39,14 +42,14 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
                   tappedIndex = index; // Start the animation
                 });
               },
-              onTapUp: (_) {
+              onTapUp: (_) async {
                 Future.delayed(const Duration(milliseconds: 200), () {
                   setState(() {
                     tappedIndex = -1; // Stop the animation after a delay
                   });
                 });
                 //* go to Edit Trade Page
-                showModalBottomSheet(
+               final result =  await showModalBottomSheet(
                   backgroundColor: const Color(0xff222222),
                   context: context,
                   useSafeArea: true,
@@ -59,6 +62,11 @@ class _ListJurnalTradeState extends State<ListJurnalTrade> {
                     );
                   },
                 );
+
+                if (result == 'update') {
+                  // reload list trade
+                  widget.updateTradeList!();
+                }
               },
               onTapCancel: () {
                 setState(() {

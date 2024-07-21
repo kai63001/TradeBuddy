@@ -279,7 +279,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
       //update trade
       context.read<TradeStore>().updateTradeById(tradeString, profileId);
       // close modal
-      Navigator.pop(context);
+      Navigator.pop(context, 'update');
       return;
     }
     // save trade to local storage

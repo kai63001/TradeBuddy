@@ -76,11 +76,6 @@ class _CardTodayMainState extends State<CardTodayMain> {
                       fontSize: 15)),
               const SizedBox(height: 10),
               getIncomeToday()
-              // Text(getIncomeToday(),
-              //     style: TextStyle(
-              //         color: Color(0xff00D6BF),
-              //         fontWeight: FontWeight.w900,
-              //         fontSize: 25)),
             ],
           ),
         ),

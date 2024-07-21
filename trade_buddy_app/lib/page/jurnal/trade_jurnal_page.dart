@@ -79,7 +79,7 @@ class _TradeJurnalPageState extends State<TradeJurnalPage> {
           //list of trades
           if (context.watch<SelectProfileStore>().state != oldProfileForCheck)
             checkIfOldProfileNotUpdate(),
-          ListJurnalTrade(trades: trades)
+          ListJurnalTrade(trades: trades, updateTradeList: getTradesBySelectedDate,)
         ],
       ),
     );

@@ -86,27 +86,40 @@ double calculateProfit({
   return netProfit;
 }
 
-/// Function to calculate the profit per day
-String calculateProfitPerDay(String date,
-    Map<String, List<Map<String, dynamic>>> state, String profileId) {
+
+String calculateProfitPerDay(String date, Map<String, List<Map<String, dynamic>>> state, String profileId) {
+  DateFormat formattedDate = DateFormat('yyyy-MM-dd'); // Ensure your date format matches the one used in the trades
   String dateFormat = formattedDate.format(DateTime.parse(date));
   List<Map<String, dynamic>> trades = state[profileId] ?? [];
   double profit = 0;
-  for (int i = 0; i < trades.length; i++) {
-    if (formattedDate.format(DateTime.parse(trades[i]['date'])) == dateFormat) {
-      if (trades[i]['netProfit'] != null) {
-        profit += trades[i]['netProfit'];
-      }
+  for (Map<String, dynamic> trade in trades) {
+    if (formattedDate.format(DateTime.parse(trade['date'])) == dateFormat) {
+      profit += trade['netProfit'] ?? 0;
     }
   }
-  String formattedProfit = '';
-  if (profit >= 1000) {
-    double formattedValue = profit / 1000;
-    formattedProfit = '\$${formattedValue.abs().toStringAsFixed(1)}k';
-  } else {
-    formattedProfit = '\$${profit.abs().toStringAsFixed(0)}';
+  return formatProfit(profit);
+}
+
+String formatProfit(double profit) {
+  bool isNegative = profit < 0; // Check if the profit is negative
+  double absoluteProfit = profit.abs(); // Work with the absolute value for formatting
+
+  String formattedProfit;
+  // Format and append 'M' for millions
+  if (absoluteProfit >= 1000000) {
+    formattedProfit = "\$${(absoluteProfit / 1000000).toStringAsFixed(absoluteProfit % 1000000 == 0 ? 0 : 3)}M";
   }
-  return formattedProfit;
+  // Format and append 'k' for thousands
+  else if (absoluteProfit >= 1000) {
+    formattedProfit = "\$${(absoluteProfit / 1000).toStringAsFixed(absoluteProfit % 1000 == 0 ? 0 : 1)}k";
+  }
+  // Return as is if less than a thousand
+  else {
+    formattedProfit = "\$${absoluteProfit.toStringAsFixed(absoluteProfit % 1 == 0 ? 0 : 2)}";
+  }
+
+  // Prepend the negative sign if the profit was negative
+  return isNegative ? "-$formattedProfit" : formattedProfit;
 }
 
 bool calculateTradeWinOrLoss(
@@ -169,3 +182,78 @@ String calculateWinRateWithTrades(List<Map<String, dynamic>> trades) {
   double winRate = winCount / (winCount + lossCount);
   return '${(winRate * 100).toStringAsFixed(2)}%';
 }
+
+// Calculate the risk-reward ratio for a trade like 1:2 or 1:3
+String calculateRiskRewardRatioWithTrades(List<Map<String, dynamic>> trades) {
+  if (trades.isEmpty) {
+    return 'No Trades';
+  }
+
+  double totalRisk = 0;
+  double totalReward = 0;
+
+  // Calculate total risk and reward
+  for (var trade in trades) {
+    double netProfit =
+        double.tryParse(trade['netProfit']?.toString() ?? '0') ?? 0;
+    if (netProfit > 0) {
+      totalReward += netProfit;
+    } else {
+      totalRisk += netProfit.abs();
+    }
+  }
+
+  // Handling cases where totalRisk or totalReward is zero
+  if (totalReward == 0) {
+    return '1:1';
+  }
+  if (totalRisk == 0) {
+    return '1:1';
+  }
+
+  // Calculating and formatting the risk-reward ratio
+  double riskRewardRatio = totalReward / totalRisk;
+  return '${riskRewardRatio.toStringAsFixed(0)}:1';
+}
+
+double calculateTotalNetProfit(List<Map<String, dynamic>> trades) {
+  double totalNetProfit = 0;
+  for (var trade in trades) {
+    totalNetProfit +=
+        double.tryParse(trade['netProfit']?.toString() ?? '0') ?? 0;
+  }
+  return totalNetProfit;
+}
+
+//convert $1,000.00 to $1k or $1,100.00 to $1.1k
+String convertMoneyToK(String value) {
+  // Remove commas and dollar signs, then convert to double
+  double amount = double.parse(value.replaceAll(RegExp(r'[\$,]'), ''));
+
+  // Format and append 'M' for millions
+  if (amount >= 1000000) {
+    // Calculate the number of decimals needed: up to 3 decimal places
+    int decimalPlaces = 3;
+    // For exact millions, reduce decimal to zero
+    if (amount % 1000000 == 0) {
+      decimalPlaces = 0;
+    }
+    return "\$${(amount / 1000000).toStringAsFixed(decimalPlaces)}M";
+  }
+  // Format and append 'k' for thousands
+  else if (amount >= 1000) {
+    // Calculate the number of decimals needed: one decimal place
+    int decimalPlaces = 1;
+    // For exact thousands, reduce decimal to zero
+    if (amount % 1000 == 0) {
+      decimalPlaces = 0;
+    }
+    return "\$${(amount / 1000).toStringAsFixed(decimalPlaces)}k";
+  }
+  // Return as is if less than a thousand
+  else {
+    return "\$$amount";
+  }
+}
+
+

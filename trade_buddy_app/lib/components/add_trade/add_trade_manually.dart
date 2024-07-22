@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -287,6 +288,51 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
 
     // close modal
     Navigator.pop(context);
+  }
+
+  Future<void> deleteTrade() async {
+    if (widget.tradeId.isEmpty) {
+      return;
+    }
+
+    //alert confirm
+    final result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text('Delete Trade'),
+          content: const Text('Are you sure you want to delete this trade?'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child:
+                  const Text('Cancel', style: TextStyle(color: Colors.white)),
+            ),
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                // get profile id
+                final String profileId =
+                    context.read<SelectProfileStore>().state;
+                //delete trade
+                context
+                    .read<TradeStore>()
+                    .deleteTrade(widget.tradeId, profileId);
+                // close modal
+                Navigator.pop(context, 'update');
+              },
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == 'update') {
+      Navigator.pop(context, 'update');
+    }
   }
 
   String nameFutureContract(String symbol) {
@@ -928,6 +974,34 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            if (widget.tradeId.isNotEmpty)
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {
+                  deleteTrade();
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.white),
+                        SizedBox(width: 30),
+                        Text(
+                          'Delete Trade',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             const SizedBox(height: 40),
           ],
         ),

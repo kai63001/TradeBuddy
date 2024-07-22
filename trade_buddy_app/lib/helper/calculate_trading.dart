@@ -32,11 +32,11 @@ Color calculateRedDayOrGreenColor(String date,
   }
 
   if (profit > 0) {
-    return Color.fromARGB(255, 19, 170, 155);
+    return const Color.fromARGB(255, 19, 170, 155);
   } else if (profit < 0) {
     return const Color(0xffFF0E37);
   } else {
-    return Color.fromARGB(255, 207, 207, 214);
+    return const Color.fromARGB(255, 207, 207, 214);
   }
 }
 

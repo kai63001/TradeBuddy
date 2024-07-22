@@ -331,6 +331,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     );
 
     if (result == 'update') {
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, 'update');
     }
   }

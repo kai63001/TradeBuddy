@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trade_buddy_app/page/create_profile/create_profile_page.dart';
@@ -37,7 +39,7 @@ class _SelectionProfileStateState extends State<SelectionProfileState> {
       setState(() {
         profiles = profileStore.state;
       });
-      final profileId = await context.read<SelectProfileStore>().state;
+      final profileId = context.read<SelectProfileStore>().state;
       await context.read<TradeStore>().initTradeList(profileId);
     }
 

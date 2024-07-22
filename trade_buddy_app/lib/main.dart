@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -92,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         profiles = profileStore.state;
       });
-      final profileId = await context.read<SelectProfileStore>().state;
+      final profileId = context.read<SelectProfileStore>().state;
       setState(() {
         profileIdGlobal = profileId;
       });

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:trade_buddy_app/components/add_trade/add_trade_manually.dart';
+import 'package:trade_buddy_app/page/trade_checklist/trade_checklist_page.dart';
 
 class CustomNavBar extends StatelessWidget {
   final NavBarConfig navBarConfig;
@@ -29,24 +30,6 @@ class CustomNavBar extends StatelessWidget {
             child: isSelected ? item.icon : item.inactiveIcon,
           ),
         ),
-        // Padding(
-        //   padding: const EdgeInsets.only(top: 15.0),
-        //   child: Material(
-        //     type: MaterialType.transparency,
-        //     child: FittedBox(
-        //       child: Text(
-        //         item.title ?? "",
-        //         style: TextStyle(
-        //           color: isSelected
-        //               ? const Color.fromARGB(255, 255, 255, 255)
-        //               : const Color.fromARGB(255, 90, 90, 90),
-        //           fontWeight: FontWeight.w600,
-        //           fontSize: 9,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }
@@ -58,12 +41,12 @@ class CustomNavBar extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return SizedBox(
-          height: 320,
+          height: 350,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const SizedBox(height: 20),
+              const SizedBox(height: 5),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
@@ -85,7 +68,39 @@ class CustomNavBar extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(
+                        255, 26, 26, 27), // background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5), // radius value
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    showModalTradeCheckList(context);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.checklist, color: Colors.white),
+                        SizedBox(width: 30),
+                        Text('Pre-Trade Checklist',
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              //divider
+              const Divider(
+                color: Color.fromARGB(255, 70, 70, 70),
+                thickness: 1,
+              ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),

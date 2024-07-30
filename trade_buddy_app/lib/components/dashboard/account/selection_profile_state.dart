@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trade_buddy_app/helper/init_trading.dart';
 import 'package:trade_buddy_app/page/create_profile/create_profile_page.dart';
 import 'package:trade_buddy_app/store/profile_store.dart';
 import 'package:trade_buddy_app/store/select_profile_store.dart';
@@ -41,6 +42,7 @@ class _SelectionProfileStateState extends State<SelectionProfileState> {
       });
       final profileId = context.read<SelectProfileStore>().state;
       await context.read<TradeStore>().initTradeList(profileId);
+      await initTradeChecklist(profileId);
     }
 
     Navigator.pop(context);

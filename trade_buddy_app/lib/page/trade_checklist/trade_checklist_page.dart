@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TradeCheckListModal extends StatefulWidget {
-  const TradeCheckListModal({Key? key}) : super(key: key);
+  const TradeCheckListModal({super.key});
 
   @override
   _TradeCheckListModalState createState() => _TradeCheckListModalState();

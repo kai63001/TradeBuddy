@@ -7,8 +7,10 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trade_buddy_app/components/custom_navbar.dart';
 import 'package:trade_buddy_app/components/dashboard/dashboard.dart';
+import 'package:trade_buddy_app/helper/init_trading.dart';
 import 'package:trade_buddy_app/page/create_profile/create_profile_page.dart';
 import 'package:trade_buddy_app/page/jurnal/trade_jurnal_page.dart';
 import 'package:trade_buddy_app/store/profile_store.dart';
@@ -85,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
     importantInitTradeData();
   }
 
-
   Future<void> importantInitTradeData() async {
     await context.read<ProfileStore>().initProfileList();
     await context.read<SelectProfileStore>().initSelectedProfile();
@@ -99,11 +100,13 @@ class _MyHomePageState extends State<MyHomePage> {
         profileIdGlobal = profileId;
       });
       await context.read<TradeStore>().initTradeList(profileId);
+      await initTradeChecklist(profileId);
     }
     setState(() {
       loading = false;
     });
   }
+
 
   List<PersistentTabConfig> _tabs() => [
         PersistentTabConfig(

@@ -1,11 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trade_buddy_app/components/add_trade/add_trade_manually.dart';
+import 'package:trade_buddy_app/helper/calculate_trading.dart';
 import 'package:trade_buddy_app/page/trade_checklist/trade_checklist_page.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
 
-class CustomNavBar extends StatelessWidget {
+class CustomNavBar extends StatefulWidget {
   final NavBarConfig navBarConfig;
   final NavBarDecoration navBarDecoration;
 
@@ -14,6 +18,31 @@ class CustomNavBar extends StatelessWidget {
     required this.navBarConfig,
     this.navBarDecoration = const NavBarDecoration(),
   });
+
+  @override
+  State<CustomNavBar> createState() => _CustomNavBarState();
+}
+
+class _CustomNavBarState extends State<CustomNavBar> {
+  bool _isTodayCheckList = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> checkIsToDayHasBeenChecked() async {
+    String profileId = context.read<SelectProfileStore>().state;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String todaay = formattedDate.format(DateTime.now());
+
+    // Check if checklist has been checked today or not by tradeCheckList_$profileId_$today
+    if (prefs.getBool('tradeCheckList_${profileId}_$todaay') == true) {
+      setState(() {
+        _isTodayCheckList = true;
+      });
+    }
+  }
 
   Widget _buildItem(ItemConfig item, bool isSelected) {
     return Column(
@@ -41,7 +70,7 @@ class CustomNavBar extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return SizedBox(
-          height: 350,
+          height:  350,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,39 +97,41 @@ class CustomNavBar extends StatelessWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(
-                        255, 26, 26, 27), // background color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5), // radius value
+              if (_isTodayCheckList)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 5.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(
+                          255, 26, 26, 27), // background color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5), // radius value
+                      ),
                     ),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    showModalTradeCheckList(context);
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12.0),
-                    child: Row(
-                      children: [
-                        Icon(Icons.checklist, color: Colors.white),
-                        SizedBox(width: 30),
-                        Text('Pre-Trade Checklist',
-                            style: TextStyle(color: Colors.white)),
-                      ],
+                    onPressed: () {
+                      Navigator.pop(context);
+                      showModalTradeCheckList(context);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.checklist, color: Colors.white),
+                          SizedBox(width: 30),
+                          Text('Pre-Trade Checklist',
+                              style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              //divider
-              const Divider(
-                color: Color.fromARGB(255, 70, 70, 70),
-                thickness: 1,
-              ),
+              if (_isTodayCheckList)
+                //divider
+                const Divider(
+                  color: Color.fromARGB(255, 70, 70, 70),
+                  thickness: 1,
+                ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
@@ -194,19 +225,19 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedNavBar(
       decoration: NavBarDecoration(
-        borderRadius: navBarDecoration.borderRadius,
-        boxShadow: navBarDecoration.boxShadow,
+        borderRadius: widget.navBarDecoration.borderRadius,
+        boxShadow: widget.navBarDecoration.boxShadow,
         color: const Color(0xff222222),
       ),
       filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
       opacity: 0.7,
-      height: navBarConfig.navBarHeight,
+      height: widget.navBarConfig.navBarHeight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: navBarConfig.items.map((item) {
-          int index = navBarConfig.items.indexOf(item);
-          if (index == navBarConfig.items.length ~/ 2) {
+        children: widget.navBarConfig.items.map((item) {
+          int index = widget.navBarConfig.items.indexOf(item);
+          if (index == widget.navBarConfig.items.length ~/ 2) {
             return Expanded(
               child: GestureDetector(
                 onTap: () {
@@ -229,12 +260,12 @@ class CustomNavBar extends StatelessWidget {
           return Expanded(
             child: InkWell(
               onTap: () {
-                navBarConfig.onItemSelected(
+                widget.navBarConfig.onItemSelected(
                     index); // This is the most important part. Without this, nothing would happen if you tap on an item.
               },
               child: _buildItem(
                 item,
-                navBarConfig.selectedIndex == index,
+                widget.navBarConfig.selectedIndex == index,
               ),
             ),
           );

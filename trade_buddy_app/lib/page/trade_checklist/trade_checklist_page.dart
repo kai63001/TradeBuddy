@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trade_buddy_app/helper/calculate_trading.dart';
+import 'package:trade_buddy_app/store/select_profile_store.dart';
 
 class TradeCheckListModal extends StatefulWidget {
   const TradeCheckListModal({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _TradeCheckListModalState createState() => _TradeCheckListModalState();
 }
 
 class _TradeCheckListModalState extends State<TradeCheckListModal> {
   // List of checklist items
-  final List<String> checklistItems = [
-    'Market analysis completed',
-    'Risk management strategy defined',
-    'Entry and exit points identified',
-    'News and events checked',
-    'Stop-loss and take-profit levels set',
-    'Position size calculated'
-  ];
+  late List<String> checklistItems = [];
 
   // Map to track checkbox states
   late Map<String, bool> checklistState;
@@ -27,7 +25,68 @@ class _TradeCheckListModalState extends State<TradeCheckListModal> {
   @override
   void initState() {
     super.initState();
-    checklistState = {for (var item in checklistItems) item: false};
+    initTradeCheckListToday();
+  }
+
+  Future<void> initTradeCheckListToday() async {
+    String profileId = context.read<SelectProfileStore>().state;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      checklistItems = prefs.getStringList('tradeChecklist_$profileId')!;
+      checklistState = {for (var item in checklistItems) item: false};
+    });
+
+    notesController.clear();
+    checkHasBeenChecked();
+  }
+
+  Future<void> checkHasBeenChecked() async {
+    String profileId = context.read<SelectProfileStore>().state;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String todaay = formattedDate.format(DateTime.now());
+
+    // Check if checklist has been checked today or not by tradeCheckList_$profileId_$today
+    if (prefs.getBool('tradeCheckList_${profileId}_$todaay') == true) {
+      // If checked, get the notes and checklist state
+      String notes =
+          prefs.getString('tradeCheckListNotes_${profileId}_$todaay')!;
+      List<String> checkedItems = prefs
+          .getStringList('tradeCheckListCheckedItems_${profileId}_$todaay')!;
+
+      // Set the notes and checklist state
+      notesController.text = notes;
+      setState(() {
+        for (var item in checkedItems) {
+          checklistState[item] = true;
+        }
+      });
+    }
+  }
+
+  Future<void> saveTradeCheckListToday() async {
+    String profileId = context.read<SelectProfileStore>().state;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String todaay = formattedDate.format(DateTime.now());
+
+    // Save the notes and checklist state
+    prefs.setString(
+        'tradeCheckListNotes_${profileId}_$todaay', notesController.text);
+    List<String> checkedItems = [];
+    for (var item in checklistState.keys) {
+      if (checklistState[item] == true) {
+        checkedItems.add(item);
+      }
+    }
+    prefs.setStringList(
+        'tradeCheckListCheckedItems_${profileId}_$todaay', checkedItems);
+
+    // Mark the checklist as checked
+    prefs.setBool('tradeCheckList_${profileId}_$todaay', true);
+
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
   }
 
   @override
@@ -113,7 +172,7 @@ class _TradeCheckListModalState extends State<TradeCheckListModal> {
                   child: ElevatedButton(
                     onPressed: () {
                       // Save checklist logic here
-                      Navigator.pop(context);
+                      saveTradeCheckListToday();
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,

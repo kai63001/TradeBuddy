@@ -26,20 +26,20 @@ class CustomNavBar extends StatefulWidget {
 class _CustomNavBarState extends State<CustomNavBar> {
   bool _isTodayCheckList = false;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Future<void> checkIsToDayHasBeenChecked() async {
     String profileId = context.read<SelectProfileStore>().state;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String todaay = formattedDate.format(DateTime.now());
 
+
     // Check if checklist has been checked today or not by tradeCheckList_$profileId_$today
     if (prefs.getBool('tradeCheckList_${profileId}_$todaay') == true) {
       setState(() {
         _isTodayCheckList = true;
+      });
+    } else {
+      setState(() {
+        _isTodayCheckList = false;
       });
     }
   }
@@ -70,7 +70,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
       context: context,
       builder: (BuildContext context) {
         return SizedBox(
-          height:  350,
+          height: 350,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +97,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                   ],
                 ),
               ),
-              if (_isTodayCheckList)
+              if (!_isTodayCheckList)
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 5.0),
@@ -126,7 +126,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                     ),
                   ),
                 ),
-              if (_isTodayCheckList)
+              if (!_isTodayCheckList)
                 //divider
                 const Divider(
                   color: Color.fromARGB(255, 70, 70, 70),
@@ -241,6 +241,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
             return Expanded(
               child: GestureDetector(
                 onTap: () {
+                  checkIsToDayHasBeenChecked();
                   showAddTradeType(context);
                 },
                 child: Container(

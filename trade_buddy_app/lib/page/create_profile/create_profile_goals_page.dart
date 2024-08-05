@@ -29,7 +29,7 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
   int yearlyGoal = 0;
 
   bool checkCondition() {
-    return dailyGoal > 0 && weeklyGoal > 0 && monthlyGoal > 0 && yearlyGoal > 0;
+    return dailyGoal > 0 && weeklyGoal > 0 && monthlyGoal > 0;
   }
 
   void createProfile() {
@@ -66,10 +66,9 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
         children: [
+          const SizedBox(height: 20),
           //input selection type container show bottom sheet
           const Center(
             child: Text('Set up your Goals',
@@ -186,42 +185,42 @@ class _CreateProfileGoalsPageState extends State<CreateProfileGoalsPage> {
               ),
             ),
           ),
-          const SizedBox(height: 15),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25.0),
-            child: Text('Yearly Goal',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15)),
-          ),
-          const SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xff2B2B2F),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextField(
-                  onChanged: (value) => {
-                    setState(() {
-                      yearlyGoal = int.parse(value);
-                    })
-                  },
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(
-                      hintText: '10000',
-                      fillColor: Color(0xff2B2B2F),
-                      labelStyle: TextStyle(color: Colors.white),
-                      border: InputBorder.none),
-                ),
-              ),
-            ),
-          ),
+          // const SizedBox(height: 15),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 25.0),
+          //   child: Text('Yearly Goal',
+          //       style: TextStyle(
+          //           color: Colors.white,
+          //           fontWeight: FontWeight.w600,
+          //           fontSize: 15)),
+          // ),
+          // const SizedBox(height: 5),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       color: const Color(0xff2B2B2F),
+          //       borderRadius: BorderRadius.circular(10),
+          //     ),
+          //     child: Padding(
+          //       padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          //       child: TextField(
+          //         onChanged: (value) => {
+          //           setState(() {
+          //             yearlyGoal = int.parse(value);
+          //           })
+          //         },
+          //         keyboardType: TextInputType.number,
+          //         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          //         decoration: const InputDecoration(
+          //             hintText: '10000',
+          //             fillColor: Color(0xff2B2B2F),
+          //             labelStyle: TextStyle(color: Colors.white),
+          //             border: InputBorder.none),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(height: 15),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 25.0),

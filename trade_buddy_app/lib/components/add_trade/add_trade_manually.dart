@@ -357,83 +357,105 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
     final feeCommissionController = _getController(
         'feeCommission', trade['feeCommission']?.toString() ?? '');
     final notesController = _getController('notes', trade['notes'] ?? '');
-    return SizedBox(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: ListView(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                    widget.tradeId.isNotEmpty
-                        ? 'Edit Trade'
-                        : 'Add a New Trade Entry',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 16)),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const Text('Symbol'),
-            const SizedBox(height: 5),
-            //input symbol with label
-            if (profileType == 'futures')
-              futureSelection(context)
-            else
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xff2B2B2F),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: TextField(
-                    controller: symbolController,
-                    decoration: const InputDecoration(
-                      hintText: 'AAPL',
-                      labelStyle: TextStyle(color: Colors.white),
-                      border: InputBorder.none,
+    return Scaffold(
+      body: SizedBox(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ListView(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      widget.tradeId.isNotEmpty
+                          ? 'Edit Trade'
+                          : 'Add a New Trade Entry',
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 16)),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Text('Symbol'),
+              const SizedBox(height: 5),
+              //input symbol with label
+              if (profileType == 'futures')
+                futureSelection(context)
+              else
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xff2B2B2F),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextField(
+                      controller: symbolController,
+                      decoration: const InputDecoration(
+                        hintText: 'AAPL',
+                        labelStyle: TextStyle(color: Colors.white),
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (value) => {
+                        setState(() {
+                          trade['symbol'] = value;
+                        })
+                      },
                     ),
-                    onChanged: (value) => {
-                      setState(() {
-                        trade['symbol'] = value;
-                      })
-                    },
                   ),
                 ),
-              ),
-            const SizedBox(height: 20),
-            const Text('Entry Date & Time'),
-            const SizedBox(height: 5),
-            //selection date and time with label
-            GestureDetector(
-              onTap: () => {
-                picker.DatePicker.showDateTimePicker(context,
-                    showTitleActions: true,
-                    onChanged: (date) {}, onConfirm: (date) {
-                  setState(() {
-                    trade['date'] = date.toIso8601String();
-                  });
+              const SizedBox(height: 20),
+              const Text('Entry Date & Time'),
+              const SizedBox(height: 5),
+              //selection date and time with label
+              GestureDetector(
+                onTap: () => {
+                  picker.DatePicker.showDateTimePicker(context,
+                      showTitleActions: true,
+                      onChanged: (date) {}, onConfirm: (date) {
+                    setState(() {
+                      trade['date'] = date.toIso8601String();
+                    });
+                  },
+                      currentTime: DateTime.now(),
+                      locale: picker.LocaleType.en,
+                      theme: const picker.DatePickerTheme(
+                        backgroundColor: Color(0xff222222),
+                        itemStyle: TextStyle(color: Colors.white),
+                        doneStyle: TextStyle(color: Colors.white),
+                        cancelStyle: TextStyle(color: Colors.white),
+                      ))
                 },
-                    currentTime: DateTime.now(),
-                    locale: picker.LocaleType.en,
-                    theme: const picker.DatePickerTheme(
-                      backgroundColor: Color(0xff222222),
-                      itemStyle: TextStyle(color: Colors.white),
-                      doneStyle: TextStyle(color: Colors.white),
-                      cancelStyle: TextStyle(color: Colors.white),
-                    ))
-              },
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff2B2B2F),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Center(
+                            child: Text(
+                              formattedDate.format(
+                                  DateTime.parse(trade['date'].toString())),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                      width: 100,
                       decoration: BoxDecoration(
                         color: const Color(0xff2B2B2F),
                         borderRadius: BorderRadius.circular(8),
@@ -443,7 +465,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                             horizontal: 10, vertical: 10),
                         child: Center(
                           child: Text(
-                            formattedDate.format(
+                            formatTime.format(
                                 DateTime.parse(trade['date'].toString())),
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 18),
@@ -451,461 +473,482 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                         ),
                       ),
                     ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              //trade side long and short
+              longOrShort(trade['tradeSide'], onChanged: (value) {
+                setState(() {
+                  trade['tradeSide'] = value;
+                });
+              }),
+              //Row entry price and exit price
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Entry Price'),
+                        const SizedBox(height: 5),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff2B2B2F),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextField(
+                              controller: entryPriceController,
+                              onChanged: (value) => {
+                                if (value.isNotEmpty)
+                                  setState(() {
+                                    trade['entryPrice'] = double.parse(value);
+                                  })
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: false, decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9.]')),
+                              ],
+                              decoration: const InputDecoration(
+                                hintText: '\$120.1',
+                                labelStyle: TextStyle(color: Colors.white),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(width: 10),
-                  Container(
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff2B2B2F),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      child: Center(
-                        child: Text(
-                          formatTime
-                              .format(DateTime.parse(trade['date'].toString())),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 18),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Exit Price'),
+                        const SizedBox(height: 5),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff2B2B2F),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextField(
+                              controller: exitPriceController,
+                              onChanged: (value) => {
+                                if (value.isNotEmpty)
+                                  setState(() {
+                                    trade['exitPrice'] = double.parse(value);
+                                  })
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: false, decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9.]')),
+                              ],
+                              decoration: const InputDecoration(
+                                hintText: '\$123.1',
+                                labelStyle: TextStyle(color: Colors.white),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
-            //trade side long and short
-            longOrShort(trade['tradeSide'], onChanged: (value) {
-              setState(() {
-                trade['tradeSide'] = value;
-              });
-            }),
-            //Row entry price and exit price
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Entry Price'),
-                      const SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff2B2B2F),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: TextField(
-                            controller: entryPriceController,
-                            onChanged: (value) => {
-                              if (value.isNotEmpty)
-                                setState(() {
-                                  trade['entryPrice'] = double.parse(value);
-                                })
-                            },
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9.]')),
-                            ],
-                            decoration: const InputDecoration(
-                              hintText: '\$120.1',
-                              labelStyle: TextStyle(color: Colors.white),
-                              border: InputBorder.none,
+              //Row Lot Size and Fee and commission
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(wordingForType(profileType)),
+                        const SizedBox(height: 5),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff2B2B2F),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextField(
+                              controller: lotSizeController,
+                              onChanged: (value) => {
+                                if (value.isNotEmpty)
+                                  setState(() {
+                                    trade['lotSize'] =
+                                        double.parse(value.toString());
+                                  })
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: false, decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9.]'))
+                              ],
+                              decoration: const InputDecoration(
+                                hintText: '1',
+                                labelStyle: TextStyle(color: Colors.white),
+                                border: InputBorder.none,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Exit Price'),
-                      const SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff2B2B2F),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: TextField(
-                            controller: exitPriceController,
-                            onChanged: (value) => {
-                              if (value.isNotEmpty)
-                                setState(() {
-                                  trade['exitPrice'] = double.parse(value);
-                                })
-                            },
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9.]')),
-                            ],
-                            decoration: const InputDecoration(
-                              hintText: '\$123.1',
-                              labelStyle: TextStyle(color: Colors.white),
-                              border: InputBorder.none,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Fee & Commission'),
+                        const SizedBox(height: 5),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff2B2B2F),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextField(
+                              controller: feeCommissionController,
+                              onChanged: (value) => {
+                                if (value.isNotEmpty)
+                                  setState(() {
+                                    trade['feeCommission'] =
+                                        double.parse(value);
+                                  })
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: false, decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9.]')),
+                              ],
+                              decoration: const InputDecoration(
+                                hintText: '\$0.1',
+                                labelStyle: TextStyle(color: Colors.white),
+                                border: InputBorder.none,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            //Row Lot Size and Fee and commission
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(wordingForType(profileType)),
-                      const SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff2B2B2F),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: TextField(
-                            controller: lotSizeController,
-                            onChanged: (value) => {
-                              if (value.isNotEmpty)
-                                setState(() {
-                                  trade['lotSize'] =
-                                      double.parse(value.toString());
-                                })
-                            },
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9.]'))
-                            ],
-                            decoration: const InputDecoration(
-                              hintText: '1',
-                              labelStyle: TextStyle(color: Colors.white),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Fee & Commission'),
-                      const SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff2B2B2F),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: TextField(
-                            controller: feeCommissionController,
-                            onChanged: (value) => {
-                              if (value.isNotEmpty)
-                                setState(() {
-                                  trade['feeCommission'] = double.parse(value);
-                                })
-                            },
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9.]')),
-                            ],
-                            decoration: const InputDecoration(
-                              hintText: '\$0.1',
-                              labelStyle: TextStyle(color: Colors.white),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Gross Profit'),
-                      // Text(calculateProfit(
-                      //         tradeSide: trade['tradeSide'],
-                      //         type: profileType.toUpperCase(),
-                      //         trickSize: profileType.toUpperCase() == "FUTURES"
-                      //             ? futuresContracts.firstWhere((element) =>
-                      //                 element['symbol'] ==
-                      //                 trade['symbol'])['tickSize']
-                      //             : 0,
-                      //         trickValue: profileType.toUpperCase() == "FUTURES"
-                      //             ? futuresContracts.firstWhere((element) =>
-                      //                 element['symbol'] ==
-                      //                 trade['symbol'])['tickValue']
-                      //             : 0,
-                      //         entryPrice: trade['entryPrice'] ?? 0,
-                      //         exitPrice: trade['exitPrice'] ?? 0,
-                      //         quantity: trade['lotSize'] ?? 0)
-                      //     .toString()),
-                      const SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 58, 56, 56),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: TextField(
-                            readOnly: true,
-                            controller: TextEditingController(
-                              text: calculateProfit(
-                                      tradeSide: trade['tradeSide'],
-                                      type: profileType.toUpperCase(),
-                                      trickSize:
-                                          profileType.toUpperCase() == "FUTURES"
-                                              ? futuresContracts.firstWhere(
-                                                  (element) =>
-                                                      element['symbol'] ==
-                                                      trade['symbol'],
-                                                  orElse: () => {
-                                                    'tickSize': 0
-                                                  }, // Provide a fallback map with a default 'tickSize'
-                                                )['tickSize']
-                                              : 0,
-                                      trickValue:
-                                          profileType.toUpperCase() == "FUTURES"
-                                              ? futuresContracts.firstWhere(
-                                                  (element) =>
-                                                      element['symbol'] ==
-                                                      trade['symbol'],
-                                                  orElse: () => {
-                                                    'tickValue': 0
-                                                  }, // Provide a fallback map with a default 'tickValue'
-                                                )['tickValue']
-                                              : 0,
-                                      entryPrice: trade['entryPrice'] ?? 0,
-                                      exitPrice: trade['exitPrice'] ?? 0,
-                                      quantity: trade['lotSize'] ?? 0)
-                                  .toString(),
-                            ),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9.]'))
-                            ],
-                            decoration: const InputDecoration(
-                              hintText: '200',
-                              labelStyle: TextStyle(
-                                  color: Color.fromARGB(255, 103, 103, 103)),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Net Profit'),
-                      const SizedBox(height: 5),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 58, 56, 56),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: TextField(
-                            controller: TextEditingController(
-                              text: (double.parse(calculateProfit(
-                                              tradeSide: trade['tradeSide'],
-                                              type: profileType.toUpperCase(),
-                                              trickSize: profileType
-                                                          .toUpperCase() ==
-                                                      "FUTURES"
-                                                  ? futuresContracts.firstWhere(
-                                                      (element) =>
-                                                          element['symbol'] ==
-                                                          trade['symbol'],
-                                                      orElse: () => {
-                                                        'tickSize': 0
-                                                      }, // Provide a fallback map with a default 'tickSize'
-                                                    )['tickSize']
-                                                  : 0,
-                                              trickValue: profileType
-                                                          .toUpperCase() ==
-                                                      "FUTURES"
-                                                  ? futuresContracts.firstWhere(
-                                                      (element) =>
-                                                          element['symbol'] ==
-                                                          trade['symbol'],
-                                                      orElse: () => {
-                                                        'tickValue': 0
-                                                      }, // Provide a fallback map with a default 'tickValue'
-                                                    )['tickValue']
-                                                  : 0,
-                                              entryPrice:
-                                                  trade['entryPrice'] ?? 0,
-                                              exitPrice:
-                                                  trade['exitPrice'] ?? 0,
-                                              quantity: trade['lotSize'] ?? 0)
-                                          .toString()) -
-                                      (trade['feeCommission'] ?? 0))
-                                  .toString(),
-                            ),
-                            readOnly: true,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9.]')),
-                            ],
-                            decoration: const InputDecoration(
-                              hintText: '\$0.1',
-                              labelStyle: TextStyle(color: Colors.white),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            //Selection Statigies
-            const SizedBox(height: 20),
-            startegiesSelection(
-                onChangeStrategies,
-                trade['strategies'].isEmpty
-                    ? []
-                    : trade['strategies'] as List<String>),
-            //Selection of Feelings mistake (optional)
-            const SizedBox(height: 20),
-            feelingOrMisstakeSelection(
-                onChangeFeelingsMistakes,
-                trade['feelingsMistakes'].isEmpty
-                    ? []
-                    : trade['feelingsMistakes'] as List<String>),
-            //Notes
-            const SizedBox(height: 20),
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xff2B2B2F),
-                borderRadius: BorderRadius.circular(8),
+                ],
               ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                child: TextField(
-                  controller: notesController,
-                  onChanged: (value) => {
-                    if (value.isNotEmpty)
-                      setState(() {
-                        trade['notes'] = value;
-                      })
-                  },
-                  maxLines: 5,
-                  decoration: const InputDecoration(
-                      //hint long text about trade notes
-                      hintText:
-                          'Summarize your learnings: Strategy effectiveness, unexpected outcomes, market impact, and potential improvements.',
-                      border: InputBorder.none),
-                ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Gross Profit'),
+                        // Text(calculateProfit(
+                        //         tradeSide: trade['tradeSide'],
+                        //         type: profileType.toUpperCase(),
+                        //         trickSize: profileType.toUpperCase() == "FUTURES"
+                        //             ? futuresContracts.firstWhere((element) =>
+                        //                 element['symbol'] ==
+                        //                 trade['symbol'])['tickSize']
+                        //             : 0,
+                        //         trickValue: profileType.toUpperCase() == "FUTURES"
+                        //             ? futuresContracts.firstWhere((element) =>
+                        //                 element['symbol'] ==
+                        //                 trade['symbol'])['tickValue']
+                        //             : 0,
+                        //         entryPrice: trade['entryPrice'] ?? 0,
+                        //         exitPrice: trade['exitPrice'] ?? 0,
+                        //         quantity: trade['lotSize'] ?? 0)
+                        //     .toString()),
+                        const SizedBox(height: 5),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 58, 56, 56),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextField(
+                              readOnly: true,
+                              controller: TextEditingController(
+                                text: calculateProfit(
+                                        tradeSide: trade['tradeSide'],
+                                        type: profileType.toUpperCase(),
+                                        trickSize: profileType.toUpperCase() ==
+                                                "FUTURES"
+                                            ? futuresContracts.firstWhere(
+                                                (element) =>
+                                                    element['symbol'] ==
+                                                    trade['symbol'],
+                                                orElse: () => {
+                                                  'tickSize': 0
+                                                }, // Provide a fallback map with a default 'tickSize'
+                                              )['tickSize']
+                                            : 0,
+                                        trickValue: profileType.toUpperCase() ==
+                                                "FUTURES"
+                                            ? futuresContracts.firstWhere(
+                                                (element) =>
+                                                    element['symbol'] ==
+                                                    trade['symbol'],
+                                                orElse: () => {
+                                                  'tickValue': 0
+                                                }, // Provide a fallback map with a default 'tickValue'
+                                              )['tickValue']
+                                            : 0,
+                                        entryPrice: trade['entryPrice'] ?? 0,
+                                        exitPrice: trade['exitPrice'] ?? 0,
+                                        quantity: trade['lotSize'] ?? 0)
+                                    .toString(),
+                              ),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: false, decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9.]'))
+                              ],
+                              decoration: const InputDecoration(
+                                hintText: '200',
+                                labelStyle: TextStyle(
+                                    color: Color.fromARGB(255, 103, 103, 103)),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Net Profit'),
+                        const SizedBox(height: 5),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 58, 56, 56),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextField(
+                              controller: TextEditingController(
+                                text: (double.parse(calculateProfit(
+                                                tradeSide: trade['tradeSide'],
+                                                type: profileType.toUpperCase(),
+                                                trickSize: profileType
+                                                            .toUpperCase() ==
+                                                        "FUTURES"
+                                                    ? futuresContracts
+                                                        .firstWhere(
+                                                        (element) =>
+                                                            element['symbol'] ==
+                                                            trade['symbol'],
+                                                        orElse: () => {
+                                                          'tickSize': 0
+                                                        }, // Provide a fallback map with a default 'tickSize'
+                                                      )['tickSize']
+                                                    : 0,
+                                                trickValue: profileType
+                                                            .toUpperCase() ==
+                                                        "FUTURES"
+                                                    ? futuresContracts
+                                                        .firstWhere(
+                                                        (element) =>
+                                                            element['symbol'] ==
+                                                            trade['symbol'],
+                                                        orElse: () => {
+                                                          'tickValue': 0
+                                                        }, // Provide a fallback map with a default 'tickValue'
+                                                      )['tickValue']
+                                                    : 0,
+                                                entryPrice:
+                                                    trade['entryPrice'] ?? 0,
+                                                exitPrice:
+                                                    trade['exitPrice'] ?? 0,
+                                                quantity: trade['lotSize'] ?? 0)
+                                            .toString()) -
+                                        (trade['feeCommission'] ?? 0))
+                                    .toString(),
+                              ),
+                              readOnly: true,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: false, decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9.]')),
+                              ],
+                              decoration: const InputDecoration(
+                                hintText: '\$0.1',
+                                labelStyle: TextStyle(color: Colors.white),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 20),
-            //show advanced
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  showAdvanced = !showAdvanced;
-                });
-              },
-              child: Container(
+              //Selection Statigies
+              const SizedBox(height: 20),
+              startegiesSelection(
+                  onChangeStrategies,
+                  trade['strategies'].isEmpty
+                      ? []
+                      : trade['strategies'] as List<String>),
+              //Selection of Feelings mistake (optional)
+              const SizedBox(height: 20),
+              feelingOrMisstakeSelection(
+                  onChangeFeelingsMistakes,
+                  trade['feelingsMistakes'].isEmpty
+                      ? []
+                      : trade['feelingsMistakes'] as List<String>),
+              //Notes
+              const SizedBox(height: 20),
+              Container(
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 28, 28, 32),
+                  color: const Color(0xff2B2B2F),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: Text(
-                          'Show Advanced',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                      ),
-                      Icon(
-                        showAdvanced
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
-                        color: Colors.white,
-                      ),
-                    ],
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10),
+                  child: TextField(
+                    controller: notesController,
+                    onChanged: (value) => {
+                      if (value.isNotEmpty)
+                        setState(() {
+                          trade['notes'] = value;
+                        })
+                    },
+                    maxLines: 5,
+                    decoration: const InputDecoration(
+                        //hint long text about trade notes
+                        hintText:
+                            'Summarize your learnings: Strategy effectiveness, unexpected outcomes, market impact, and potential improvements.',
+                        border: InputBorder.none),
                   ),
                 ),
               ),
-            ),
-            if (showAdvanced)
-              //selection date and time with label
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  const Text('End Date & Time (Optional)'),
-                  const SizedBox(height: 5),
-                  GestureDetector(
-                    onTap: () => {
-                      picker.DatePicker.showDateTimePicker(context,
-                          showTitleActions: true,
-                          onChanged: (date) {}, onConfirm: (date) {
-                        setState(() {
-                          trade['endDateTime'] = date;
-                        });
-                      },
-                          currentTime: DateTime.now(),
-                          locale: picker.LocaleType.en,
-                          theme: const picker.DatePickerTheme(
-                            backgroundColor: Color(0xff222222),
-                            itemStyle: TextStyle(color: Colors.white),
-                            doneStyle: TextStyle(color: Colors.white),
-                            cancelStyle: TextStyle(color: Colors.white),
-                          ))
-                    },
+              const SizedBox(height: 20),
+              //show advanced
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showAdvanced = !showAdvanced;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 28, 28, 32),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
                     child: Row(
                       children: [
-                        Expanded(
-                          child: Container(
+                        const Expanded(
+                          child: Text(
+                            'Show Advanced',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                        Icon(
+                          showAdvanced
+                              ? Icons.keyboard_arrow_up
+                              : Icons.keyboard_arrow_down,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              if (showAdvanced)
+                //selection date and time with label
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    const Text('End Date & Time (Optional)'),
+                    const SizedBox(height: 5),
+                    GestureDetector(
+                      onTap: () => {
+                        picker.DatePicker.showDateTimePicker(context,
+                            showTitleActions: true,
+                            onChanged: (date) {}, onConfirm: (date) {
+                          setState(() {
+                            trade['endDateTime'] = date;
+                          });
+                        },
+                            currentTime: DateTime.now(),
+                            locale: picker.LocaleType.en,
+                            theme: const picker.DatePickerTheme(
+                              backgroundColor: Color(0xff222222),
+                              itemStyle: TextStyle(color: Colors.white),
+                              doneStyle: TextStyle(color: Colors.white),
+                              cancelStyle: TextStyle(color: Colors.white),
+                            ))
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff2B2B2F),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                child: Center(
+                                  child: Text(
+                                    formattedDate
+                                        .format(DateTime.parse(trade['date'])),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Container(
+                            width: 100,
                             decoration: BoxDecoration(
                               color: const Color(0xff2B2B2F),
                               borderRadius: BorderRadius.circular(8),
@@ -915,7 +958,7 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                                   horizontal: 10, vertical: 10),
                               child: Center(
                                 child: Text(
-                                  formattedDate
+                                  formatTime
                                       .format(DateTime.parse(trade['date'])),
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 18),
@@ -923,79 +966,30 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 10),
-                        Container(
-                          width: 100,
-                          decoration: BoxDecoration(
-                            color: const Color(0xff2B2B2F),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            child: Center(
-                              child: Text(
-                                formatTime
-                                    .format(DateTime.parse(trade['date'])),
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            //Button Save Trade
-            const SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 26, 26, 27),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: checkConditionCanSave() ? saveTrade : null,
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-                child: Center(
-                  child: Row(
-                    children: [
-                      Icon(Icons.save, color: Colors.white),
-                      SizedBox(width: 30),
-                      Text(
-                        'Save Trade',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            if (widget.tradeId.isNotEmpty)
+              //Button Save Trade
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: const Color.fromARGB(255, 26, 26, 27),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () {
-                  deleteTrade();
-                },
+                onPressed: checkConditionCanSave() ? saveTrade : null,
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   child: Center(
                     child: Row(
                       children: [
-                        Icon(Icons.delete, color: Colors.white),
+                        Icon(Icons.save, color: Colors.white),
                         SizedBox(width: 30),
                         Text(
-                          'Delete Trade',
+                          'Save Trade',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],
@@ -1003,8 +997,37 @@ class _AddTrandingManuallyPageState extends State<AddTrandingManuallyPage> {
                   ),
                 ),
               ),
-            const SizedBox(height: 40),
-          ],
+              const SizedBox(height: 20),
+              if (widget.tradeId.isNotEmpty)
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {
+                    deleteTrade();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, color: Colors.white),
+                          SizedBox(width: 30),
+                          Text(
+                            'Delete Trade',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );

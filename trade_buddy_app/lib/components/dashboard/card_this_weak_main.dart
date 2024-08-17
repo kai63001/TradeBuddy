@@ -15,7 +15,6 @@ class CardThisWeakMain extends StatefulWidget {
 class _CardThisWeakMainState extends State<CardThisWeakMain> {
   List<DateTime> weekDates = [];
   Map<String, List<Map<String, dynamic>>> state = {};
-  String profileId = '';
 
   @override
   void initState() {
@@ -27,7 +26,6 @@ class _CardThisWeakMainState extends State<CardThisWeakMain> {
   void getTradeData() {
     Map<String, List<Map<String, dynamic>>> newState =
         context.read<TradeStore>().state;
-    String newProfileId = context.read<SelectProfileStore>().state;
     setState(() {
       state = newState;
     });

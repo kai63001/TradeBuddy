@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trade_buddy_app/components/dashboard/account/selection_profile_state.dart';
+import 'package:trade_buddy_app/components/dashboard/card_chart_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_overview_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_this_weak_main.dart';
 import 'package:trade_buddy_app/components/dashboard/card_today_main.dart';
@@ -77,6 +78,7 @@ class _DashboardState extends State<Dashboard> {
             CardOverview(),
             // CardRecentTradesMain(),
             CardThisWeakMain(),
+            CardChartMain(),
           ],
         ));
   }
